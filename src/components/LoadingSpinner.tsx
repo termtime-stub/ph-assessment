@@ -1,26 +1,29 @@
-import {ComponentStyleSheet} from "../types/ComponentStyleSheet";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import {makeStyles, createStyles} from "@mui/styles";
 
-const style = ComponentStyleSheet.create({
-  spinner: {
-    position: "fixed",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    justifyContent: "center",
-  },
-  container: {
-    flex: 1,
-    flexGrow: 1,
-    backgroundColor: "#201640",
-  },
-});
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    spinner: {
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      justifyContent: "center",
+    },
+    container: {
+      flex: 1,
+      flexGrow: 1,
+      backgroundColor: "#201640",
+    },
+  })
+);
 
 export const LoadingSpinner = () => {
+  const styles = useStyles();
   return (
-    <Box style={style.container}>
-      <Box style={style.spinner}>
+    <Box className={styles.container}>
+      <Box className={styles.spinner}>
         <CircularProgress />
       </Box>
     </Box>

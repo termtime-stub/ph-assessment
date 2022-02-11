@@ -1,4 +1,4 @@
-import {Button, Theme} from "@mui/material";
+import {Theme} from "@mui/material";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -39,6 +39,11 @@ const useStyles = makeStyles((theme: Theme) =>
     cardSubtitle: {
       marginLeft: "8px",
     },
+    favoriteButtonContainer: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "flex-end",
+    },
   })
 );
 
@@ -73,7 +78,9 @@ export const SongCard = ({song}: SongCardProps) => {
           >
             {song.artist}
           </Typography>
-          <AddOrRemoveSongButton song={song} />
+          <Box className={styles.favoriteButtonContainer}>
+            <AddOrRemoveSongButton song={song} />
+          </Box>
         </CardContent>
       </Box>
     </Card>
