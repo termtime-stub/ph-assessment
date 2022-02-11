@@ -6,6 +6,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 
 import {makeStyles, createStyles} from "@mui/styles";
+import {AddOrRemoveSongButton} from "../AddOrRemoveSongButton";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,7 +55,7 @@ export const SongCard = ({song}: SongCardProps) => {
         <CardMedia
           component="img"
           className={styles.cardImage}
-          src={song.image}
+          src={song.album?.picture}
           alt={song.title}
         />
       </Box>
@@ -71,11 +72,7 @@ export const SongCard = ({song}: SongCardProps) => {
           >
             {song.artist}
           </Typography>
-          {song.isInLibrary ? (
-            <Button color="error">Remove from library</Button>
-          ) : (
-            <Button color="secondary">Save to library</Button>
-          )}
+          <AddOrRemoveSongButton song={song} />
         </CardContent>
       </Box>
     </Card>

@@ -24,7 +24,7 @@ import "react-multi-carousel/lib/styles.css";
 
 import {makeStyles, createStyles} from "@mui/styles";
 import {SongCard} from "./SongCard";
-import {useAppDispatch, useAppSelector} from "../app/hooks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,51 +42,75 @@ export const NewReleases = () => {
   const newSongs: SongMetadata[] = [
     {
       title: "A head full of dreams",
-      image:
-        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      album: {
+        picture:
+          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+        title: "A head full of dreams",
+      },
       artist: "Coldplay",
       id: "1",
       isInLibrary: false,
+      duration: 30000,
     },
     {
       title: "A head full of dreams",
-      image:
-        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      album: {
+        picture:
+          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+        title: "A head full of dreams",
+      },
       artist: "Coldplay",
       id: "1",
       isInLibrary: false,
+      duration: 30000,
     },
     {
       title: "A head full of dreams",
-      image:
-        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      album: {
+        picture:
+          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+        title: "A head full of dreams",
+      },
       artist: "Coldplay",
       id: "1",
       isInLibrary: true,
+      duration: 30000,
     },
     {
       title: "A head full of dreams",
-      image:
-        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      album: {
+        picture:
+          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+        title: "A head full of dreams",
+      },
       artist: "Coldplay",
       id: "1",
       isInLibrary: true,
+      duration: 30000,
     },
     {
       title: "A head full of dreams",
-      image:
-        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      album: {
+        picture:
+          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+        title: "A head full of dreams",
+      },
       artist: "Coldplay",
       id: "1",
       isInLibrary: false,
+      duration: 30000,
     },
     {
       title: "A head full of dreams",
-      image:
-        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      album: {
+        picture:
+          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+        title: "A head full of dreams",
+      },
       artist: "Coldplay",
       id: "1",
       isInLibrary: false,
+      duration: 30000,
     },
   ];
 

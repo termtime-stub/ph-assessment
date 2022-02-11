@@ -7,9 +7,14 @@ declare global {
 
   interface SongMetadata {
     title: string;
-    image: string;
+
     artist: string;
     id: string;
     isInLibrary: boolean;
+    album: {
+      picture: string;
+      title: string;
+    };
+    duration: number;
   }
 }

@@ -15,7 +15,8 @@ import {
 import {APP_ROUTES} from "../../constants/index";
 import {makeStyles, createStyles} from "@mui/styles";
 import {NavBar} from "../../components/NavBar";
-import {NewReleases} from "../../components/NewReleases";
+import {NewReleases} from "../../components/NewReleases/NewReleases";
+import {SearchResults} from "../../components/SearchResults.tsx/SearchResults";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({}));
 
@@ -29,7 +30,7 @@ export const DashboardPage = () => {
     <Box>
       <NavBar />
       <NewReleases />
-      {/* <MoreSongs /> */}
+      <SearchResults />
     </Box>
   );
 };
