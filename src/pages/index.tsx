@@ -1,23 +1,39 @@
 import {useAuth0} from "@auth0/auth0-react";
-import {createTheme, CssBaseline} from "@mui/material";
+import {createTheme, ThemeProvider, CssBaseline} from "@mui/material";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import {LoadingSpinner} from "../components/LoadingSpinner";
 import {ProtectedRoute} from "../components/ProtectedRoute";
 import {APP_ROUTES} from "../constants";
 import {DashboardPage} from "./DashboardPage/DashboardPage";
 import React from "react";
-import {ThemeProvider} from "@mui/styles";
 
-const theme = createTheme({
+const darkMode = createTheme({
   palette: {
     mode: "dark",
+    background: {
+      default: "#201640",
+    },
+    secondary: {
+      main: "#1fdf64",
+      light: "#1fdf64",
+      dark: "#1fdf64",
+    },
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          background:
+            "linear-gradient(180deg, rgba(32,17,95,1) 0%, rgba(18,18,18,1) 40%)",
+        },
+      },
+    },
     MuiAppBar: {
       styleOverrides: {
         colorPrimary: "#201060",
       },
     },
+
     MuiTypography: {
       defaultProps: {
         fontFamily: "Helvetica",
@@ -29,7 +45,7 @@ const theme = createTheme({
 const App = () => {
   const {isLoading} = useAuth0();
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={darkMode}>
       <React.Fragment>
         <CssBaseline />
         <BrowserRouter>

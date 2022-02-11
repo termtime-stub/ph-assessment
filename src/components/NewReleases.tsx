@@ -15,15 +15,29 @@ import {
   ListItemButton,
   ListItemText,
   Card,
+  Grid,
+  Container,
 } from "@mui/material";
+
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 import {makeStyles, createStyles} from "@mui/styles";
 import {SongCard} from "./SongCard";
 import {useAppDispatch, useAppSelector} from "../app/hooks";
 
-const useStyles = makeStyles((theme: Theme) => createStyles({}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    carousel: {},
+    sectionTitle: {
+      marginTop: "25px",
+      marginLeft: "50px",
+    },
+  })
+);
 
 export const NewReleases = () => {
+  const styles = useStyles();
   //   const {newSongs} = useAppSelector((state) => state.songs);
   const newSongs: SongMetadata[] = [
     {
@@ -32,18 +46,85 @@ export const NewReleases = () => {
         "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
       artist: "Coldplay",
       id: "1",
+      isInLibrary: false,
+    },
+    {
+      title: "A head full of dreams",
+      image:
+        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      artist: "Coldplay",
+      id: "1",
+      isInLibrary: false,
+    },
+    {
+      title: "A head full of dreams",
+      image:
+        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      artist: "Coldplay",
+      id: "1",
+      isInLibrary: true,
+    },
+    {
+      title: "A head full of dreams",
+      image:
+        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      artist: "Coldplay",
+      id: "1",
+      isInLibrary: true,
+    },
+    {
+      title: "A head full of dreams",
+      image:
+        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      artist: "Coldplay",
+      id: "1",
+      isInLibrary: false,
+    },
+    {
+      title: "A head full of dreams",
+      image:
+        "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
+      artist: "Coldplay",
+      id: "1",
+      isInLibrary: false,
     },
   ];
+
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: {max: 4000, min: 3000},
+      items: 5,
+      partialVisibilityGutter: 40,
+    },
+    desktop: {
+      breakpoint: {max: 3000, min: 1024},
+      items: 4,
+      partialVisibilityGutter: 30,
+    },
+    tablet: {
+      breakpoint: {max: 1024, min: 464},
+      items: 3,
+      partialVisibilityGutter: 20,
+    },
+    mobile: {
+      breakpoint: {max: 464, min: 0},
+      items: 2,
+      partialVisibilityGutter: 10,
+    },
+  };
+
   return (
     <Box>
-      <Typography variant="h3">New Releases</Typography>
-      <List>
+      <Typography variant="h3" className={styles.sectionTitle}>
+        New Releases
+      </Typography>
+      <Carousel responsive={responsive} partialVisible={true}>
         {newSongs.map((s) => (
-          <ListItem disablePadding>
+          <Grid item>
             <SongCard song={s} />
-          </ListItem>
+          </Grid>
         ))}
-      </List>
+      </Carousel>
     </Box>
   );
 };

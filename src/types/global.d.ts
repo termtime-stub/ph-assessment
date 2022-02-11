@@ -10,5 +10,6 @@ declare global {
     image: string;
     artist: string;
     id: string;
+    isInLibrary: boolean;
   }
 }

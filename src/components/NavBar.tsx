@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme: Theme) =>
       fontFamily: "Helvetica",
       color: "#b3b3b3",
       textDecoration: "none",
-
       "&:hover": {
         color: "#ffffff",
       },
