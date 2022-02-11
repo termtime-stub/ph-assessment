@@ -20,8 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
     col: {
       display: "flex",
       flexDirection: "column",
-      borderBottomColor: "#302c3a",
-      borderBottomWidth: 10,
+      padding: 10,
     },
   })
 );
@@ -32,7 +31,7 @@ export const SearchResultHeader = () => {
     <Box>
       <Grid columns={7} container className={styles.container}>
         <Grid item xs={1} className={styles.col}>
-          <Typography variant="subtitle1">#</Typography>
+          <Typography variant="subtitle1"></Typography>
         </Grid>
         <Grid item xs={2} className={styles.col}>
           <Typography variant="subtitle1">Title</Typography>

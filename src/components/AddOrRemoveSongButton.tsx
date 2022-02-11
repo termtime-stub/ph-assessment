@@ -4,7 +4,7 @@ import {Box, IconButton} from "@mui/material";
 import {makeStyles, createStyles} from "@mui/styles";
 
 interface AddOrRemoveSongButtonProps {
-  song: SongMetadata;
+  song: Track;
 }
 
 export const AddOrRemoveSongButton = ({song}: AddOrRemoveSongButtonProps) => {

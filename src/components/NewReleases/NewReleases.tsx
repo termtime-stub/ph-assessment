@@ -38,81 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const NewReleases = () => {
   const styles = useStyles();
-  //   const {newSongs} = useAppSelector((state) => state.songs);
-  const newSongs: SongMetadata[] = [
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: false,
-      duration: 30000,
-    },
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: false,
-      duration: 30000,
-    },
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: true,
-      duration: 30000,
-    },
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: true,
-      duration: 30000,
-    },
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: false,
-      duration: 30000,
-    },
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: false,
-      duration: 30000,
-    },
-  ];
+  const {results} = useAppSelector((state) => state.search);
 
   const responsive = {
     superLargeDesktop: {
@@ -143,7 +69,7 @@ export const NewReleases = () => {
         New Releases
       </Typography>
       <Carousel responsive={responsive} partialVisible={true}>
-        {newSongs.map((s) => (
+        {results.map((s) => (
           <Grid item>
             <SongCard song={s} />
           </Grid>

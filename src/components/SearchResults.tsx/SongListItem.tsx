@@ -1,8 +1,5 @@
-import {Avatar, Button, Grid, Theme} from "@mui/material";
+import {Avatar, Grid} from "@mui/material";
 import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 
 import {makeStyles, createStyles} from "@mui/styles";
@@ -11,7 +8,7 @@ import moment from "moment";
 import {AddOrRemoveSongButton} from "../AddOrRemoveSongButton";
 
 interface SongListItemProps {
-  song: SongMetadata;
+  song: Track;
 }
 
 const useStyles = makeStyles((theme) =>
@@ -39,7 +36,8 @@ const useStyles = makeStyles((theme) =>
     gridItem: {
       display: "flex",
       flexDirection: "column",
-      justifyContent: "center",
+      padding: 10,
+      textOverflow: "ellipsis",
     },
   })
 );
@@ -47,20 +45,23 @@ const useStyles = makeStyles((theme) =>
 export const SongListItem = ({song}: SongListItemProps) => {
   const styles = useStyles();
   return (
-    <Box className={styles.container}>
+    <Box className={styles.container} id={song.id}>
       <Grid container columns={7}>
         <Grid className={styles.gridItem} item xs={1}>
-          <Avatar variant="square" src={song.album?.picture} />
+          <Avatar
+            variant="square"
+            src={song.album.images.length !== 0 ? song.album.images[0].url : ""}
+          />
         </Grid>
         <Grid className={styles.gridItem} item xs={2}>
-          <Typography variant="h6">{song.title}</Typography>
+          <Typography variant="h6">{song.name}</Typography>
         </Grid>
         <Grid className={styles.gridItem} item xs={2}>
-          <Typography variant="subtitle2">{song.album?.title}</Typography>
+          <Typography variant="subtitle2">{song.album.name}</Typography>
         </Grid>
         <Grid className={styles.gridItem} item xs={1}>
           <Typography variant="subtitle2">
-            {moment.utc(song.duration).format("hh:mm:ss")}
+            {moment.utc(song.duration_ms).format("mm:ss")}
           </Typography>
         </Grid>
         <Grid className={styles.gridItem} item xs={1}>

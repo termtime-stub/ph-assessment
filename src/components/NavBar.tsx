@@ -1,4 +1,5 @@
-import {useAuth0} from "@auth0/auth0-react";
+import axios from "axios";
+import {useAuth0, User} from "@auth0/auth0-react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {
   AppBar,
@@ -13,6 +14,11 @@ import {
 
 import {makeStyles, createStyles} from "@mui/styles";
 import {APP_ROUTES} from "../constants/index";
+import {SpotifyService} from "../services/SpotifyService";
+import {AppDispatch} from "../app/store";
+import {useAppDispatch} from "../app/hooks";
+import {searchSpotify} from "../app/redux/reducers/search.reducer";
+import {useState} from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,13 +28,13 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 10,
     },
     searchContainer: {
-      backgroundColor: "#fff",
+      // backgroundColor: "#fff",
       borderRadius: "50px",
     },
     searchInput: {
       fontFamily: "Helvetica",
       borderRadius: "50px",
-      color: "#000",
+      color: "#fff",
     },
     navbarContainer: {
       backgroundColor: "#201640",
@@ -48,15 +54,24 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
 export const NavBar = () => {
-  const {logout, user} = useAuth0();
+  const {logout, user, getIdTokenClaims} = useAuth0();
+  const [query, onChange] = useState("");
   const location = useLocation();
+  const dispatch = useAppDispatch();
+
+  const handleSearch = async () => {
+    dispatch(searchSpotify({user, query}));
+  };
 
   const renderMidNavbar = () => {
     if (location.pathname === APP_ROUTES.DASHBOARD) {
       return (
         <Box component="div" sx={{flexGrow: 1}}>
           <TextField
+            value={query}
+            onChange={(e) => onChange(e.target.value)}
             variant="outlined"
             inputProps={{
               className: styles.searchInput,
@@ -64,12 +79,13 @@ export const NavBar = () => {
             className={styles.searchContainer}
             placeholder="Search songs"
           />
+          <Button onClick={handleSearch}>Search</Button>
         </Box>
       );
     } else if (location.pathname === APP_ROUTES.LIBRARY) {
-      console.log("Hey");
       <Box component="div" sx={{flexGrow: 1}}>
         <TextField
+          value={query}
           variant="outlined"
           inputProps={{
             className: styles.searchInput,

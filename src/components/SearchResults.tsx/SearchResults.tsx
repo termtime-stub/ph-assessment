@@ -10,7 +10,7 @@ import {useAppSelector} from "../../app/hooks";
 import {SearchResultHeader} from "./SearchResultHeader";
 import {SongListItem} from "./SongListItem";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     container: {
       marginLeft: 50,
@@ -20,88 +20,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const SearchResults = () => {
-  // const {searchResults} = useAppSelector((state)=> state.songs.search)
+  const {results} = useAppSelector((state) => state.search);
   const styles = useStyles();
-  const searchResults: SongMetadata[] = [
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: false,
-      duration: 30000,
-    },
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: false,
-      duration: 30000,
-    },
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: true,
-      duration: 30000,
-    },
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: true,
-      duration: 30000,
-    },
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: false,
-      duration: 30000,
-    },
-    {
-      title: "A head full of dreams",
-      album: {
-        picture:
-          "https://upload.wikimedia.org/wikipedia/en/3/3d/Coldplay_-_A_Head_Full_of_Dreams.png",
-        title: "A head full of dreams",
-      },
-      artist: "Coldplay",
-      id: "1",
-      isInLibrary: false,
-      duration: 30000,
-    },
-  ];
 
   return (
     <Box className={styles.container}>
       <SearchResultHeader />
       <List>
-        {searchResults.map((s) => (
+        {results.map((s) => (
           <SongListItem song={s} />
         ))}
       </List>

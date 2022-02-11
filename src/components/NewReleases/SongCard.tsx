@@ -13,6 +13,8 @@ const useStyles = makeStyles((theme: Theme) =>
     cardContainer: {
       backgroundColor: "#262626",
       margin: "3vw",
+      height: "45vh",
+      width: "18vw",
       boxShadow: "10px 10px 37px -8px rgba(0,0,0,0.75)",
       borderRadius: "10px",
       userSelect: "none",
@@ -22,11 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     cardImage: {
-      marginLeft: 8,
-      marginRight: 6,
-      marginTop: 16,
       borderRadius: "10px",
-      width: "16vw",
       objectFit: "cover",
       backgroundSize: "cover",
       boxShadow: "0px 0px 36px -8px rgba(0,0,0,0.75)",
@@ -44,11 +42,14 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: "row",
       justifyContent: "flex-end",
     },
+    textContainer: {
+      height: "10vh",
+    },
   })
 );
 
 interface SongCardProps {
-  song: SongMetadata;
+  song: Track;
 }
 export const SongCard = ({song}: SongCardProps) => {
   const styles = useStyles();
@@ -56,28 +57,43 @@ export const SongCard = ({song}: SongCardProps) => {
     <Card
       className={styles.cardContainer}
       sx={{transition: "all 0.2s ease-out"}}
+      id={song.id}
     >
-      <Box sx={{display: "flex", flexDirection: "column"}}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          marginTop: 2,
+          marginLeft: 2,
+          marginRight: 2,
+        }}
+      >
         <CardMedia
           component="img"
           className={styles.cardImage}
-          src={song.album?.picture}
-          alt={song.title}
+          src={song.album?.images.length !== 0 ? song.album?.images[0].url : ""}
+          alt={song.name}
         />
       </Box>
       <Box sx={{display: "flex", flexDirection: "column"}}>
         <CardContent>
-          <Typography component="div" variant="h6" className={styles.cardTitle}>
-            {song.title}
-          </Typography>
-          <Typography
-            variant="subtitle2"
-            color="text.secondary"
-            component="div"
-            className={styles.cardSubtitle}
-          >
-            {song.artist}
-          </Typography>
+          <Box className={styles.textContainer}>
+            <Typography
+              component="div"
+              variant="h6"
+              className={styles.cardTitle}
+            >
+              {song.name}
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              component="div"
+              className={styles.cardSubtitle}
+            >
+              {song.artists.length !== 0 ? song.artists[0].name : ""}
+            </Typography>
+          </Box>
           <Box className={styles.favoriteButtonContainer}>
             <AddOrRemoveSongButton song={song} />
           </Box>
