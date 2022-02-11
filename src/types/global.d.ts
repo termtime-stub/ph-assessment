@@ -58,6 +58,7 @@ declare global {
   }
   interface Track {
     album: Album;
+    items: Track[];
     artists: Artist[];
     name: string;
     id: string;
@@ -72,6 +73,13 @@ declare global {
     previous: number | null;
     total: number;
     items: Track[];
+  }
+
+  interface NewReleasesResponse {
+    albums: {
+      items: Album[];
+    };
+    error?: AxiosError;
   }
 
   interface AxiosError {

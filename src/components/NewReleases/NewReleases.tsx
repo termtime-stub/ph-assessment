@@ -1,4 +1,4 @@
-import {useAuth0} from "@auth0/auth0-react";
+import {useAuth0, User} from "@auth0/auth0-react";
 import {useNavigate} from "react-router-dom";
 import {
   AppBar,
@@ -17,6 +17,7 @@ import {
   Card,
   Grid,
   Container,
+  CircularProgress,
 } from "@mui/material";
 
 import Carousel from "react-multi-carousel";
@@ -25,6 +26,8 @@ import "react-multi-carousel/lib/styles.css";
 import {makeStyles, createStyles} from "@mui/styles";
 import {SongCard} from "./SongCard";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {useEffect} from "react";
+import {getNewReleases} from "../../app/redux/reducers/search.reducer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,12 +36,22 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "25px",
       marginLeft: "50px",
     },
+    placeholderSpace: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "center",
+      height: "50vh",
+    },
   })
 );
 
 export const NewReleases = () => {
   const styles = useStyles();
-  const {results} = useAppSelector((state) => state.search);
+  const {newReleases, loadingNewReleases} = useAppSelector(
+    (state) => state.search
+  );
+  const {user} = useAuth0();
+  const dispatch = useAppDispatch();
 
   const responsive = {
     superLargeDesktop: {
@@ -63,18 +76,32 @@ export const NewReleases = () => {
     },
   };
 
+  useEffect(() => {
+    if (user) {
+      dispatch(getNewReleases(user));
+    }
+  }, [dispatch, user]);
+
   return (
     <Box>
-      <Typography variant="h3" className={styles.sectionTitle}>
-        New Releases
-      </Typography>
-      <Carousel responsive={responsive} partialVisible={true}>
-        {results.map((s) => (
-          <Grid item>
-            <SongCard song={s} />
-          </Grid>
-        ))}
-      </Carousel>
+      {loadingNewReleases ? (
+        <Box className={styles.placeholderSpace}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Box>
+          <Typography variant="h3" className={styles.sectionTitle}>
+            New Releases
+          </Typography>
+          <Carousel responsive={responsive} partialVisible={true}>
+            {newReleases.map((s) => (
+              <Grid item id={s.id}>
+                <SongCard song={s} />
+              </Grid>
+            ))}
+          </Carousel>
+        </Box>
+      )}
     </Box>
   );
 };

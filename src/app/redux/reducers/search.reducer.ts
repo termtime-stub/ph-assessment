@@ -38,8 +38,6 @@ export const searchSpotify = createAsyncThunk(
       refreshToken
     );
 
-    console.log(res?.items);
-
     const response: SearchPayload = {
       results: res?.items ?? [],
       query,
@@ -73,8 +71,6 @@ export const getNewReleases = createAsyncThunk(
       spotifyToken,
       refreshToken
     );
-
-    console.log(res?.items);
 
     const response: SearchPayload = {
       results: res?.items ?? [],

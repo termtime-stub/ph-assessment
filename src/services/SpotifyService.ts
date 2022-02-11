@@ -1,4 +1,5 @@
 import axios from "axios";
+import {albumToTrack} from "../utils";
 
 interface ErrorResponse {
   error: {message: string; statusCode: number};
@@ -6,8 +7,6 @@ interface ErrorResponse {
 export class SpotifyService {
   async search(q: string, token: string, refreshToken: string) {
     const endpoint = `https://api.spotify.com/v1/search?q=${q}&type=track`;
-    console.log({spotifyToken: token});
-    console.log({endpoint});
 
     let res = await axios.get<SearchResponse>(endpoint, {
       headers: {
@@ -15,12 +14,10 @@ export class SpotifyService {
       },
       validateStatus: (status) => true,
     });
-    console.log(res);
     if (
       res.data.error &&
       res.data.error.message === "The access token expired"
     ) {
-      console.log("lets go");
       //refresh the token
       const refreshEndpoint = "https://api.spotify.com/v1/refresh";
       const refreshRes = await axios.post(
@@ -34,7 +31,6 @@ export class SpotifyService {
           },
         }
       );
-      console.log(refreshRes);
       const newTk = refreshRes.data;
 
       res = await axios.get<SearchResponse>(endpoint, {
@@ -51,10 +47,8 @@ export class SpotifyService {
 
   async getNewReleases(token: string, refreshToken: string) {
     const endpoint = "https://api.spotify.com/v1/browse/new-releases";
-    console.log({spotifyToken: token});
-    console.log({endpoint});
 
-    let res = await axios.get<SearchResponse>(endpoint, {
+    let res = await axios.get<NewReleasesResponse>(endpoint, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -78,20 +72,20 @@ export class SpotifyService {
           },
         }
       );
-      console.log(refreshRes);
       const newTk = refreshRes.data;
 
-      res = await axios.get<SearchResponse>(endpoint, {
+      res = await axios.get<NewReleasesResponse>(endpoint, {
         headers: {
           Authorization: `Bearer ${newTk}`,
         },
       });
     }
 
-    console.log(res);
-
     if (res) {
-      return res.data.tracks;
+      return {
+        ...res,
+        items: res.data.albums.items.map((s) => albumToTrack(s, false)),
+      };
     }
   }
 }

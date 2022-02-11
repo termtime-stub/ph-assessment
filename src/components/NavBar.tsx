@@ -84,21 +84,12 @@ export const NavBar = () => {
       );
     } else if (location.pathname === APP_ROUTES.LIBRARY) {
       <Box component="div" sx={{flexGrow: 1}}>
-        <TextField
-          value={query}
-          variant="outlined"
-          inputProps={{
-            className: styles.searchInput,
-          }}
-          className={styles.searchContainer}
-          placeholder="Search songs"
-        />
+        <Typography>My Library</Typography>
       </Box>;
     }
   };
 
   const renderLinkNav = () => {
-    console.log(location.pathname);
     if (location.pathname === APP_ROUTES.DASHBOARD) {
       return (
         <Link to={APP_ROUTES.LIBRARY}>

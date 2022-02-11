@@ -7,7 +7,6 @@ interface ProtectedRouteProps {
 }
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({children}) => {
   const {isAuthenticated, isLoading, loginWithRedirect} = useAuth0();
-  console.log({isAuthenticated, isLoading});
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {

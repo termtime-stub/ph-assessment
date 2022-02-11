@@ -3,6 +3,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
 import {makeStyles, createStyles} from "@mui/styles";
+import {useAppSelector} from "../../app/hooks";
+import {NoSearch} from "./NoSearch";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +29,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const SearchResultHeader = () => {
   const styles = useStyles();
+  const {results} = useAppSelector((state) => state.search);
+
+  if (results.length === 0) {
+    return <NoSearch />;
+  }
   return (
     <Box>
       <Grid columns={7} container className={styles.container}>

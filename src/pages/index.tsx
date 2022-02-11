@@ -24,6 +24,7 @@ const darkMode = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
+          minHeight: "100vh",
           background:
             "linear-gradient(180deg, rgba(32,17,95,1) 0%, rgba(18,18,18,1) 40%)",
         },
