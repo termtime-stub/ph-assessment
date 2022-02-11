@@ -19,7 +19,7 @@ export interface SearchState extends BaseState {
 }
 
 export interface SearchPayload extends BasePayload {
-  results: ServerMetadata[];
+  results: Track[];
   query?: string;
 }
 
@@ -27,8 +27,10 @@ export interface SearchPayload extends BasePayload {
 export interface LibraryState extends BaseState {
   songs: Track[];
   loadingLibrary: boolean;
+  loadingRemove: boolean;
 }
 
 export interface LibraryPayload extends BasePayload {
   songs?: Track[];
+  modifiedSong?: Track;
 }

@@ -27,7 +27,7 @@ import {makeStyles, createStyles} from "@mui/styles";
 import {SongCard} from "./SongCard";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {useEffect} from "react";
-import {getNewReleases} from "../../app/redux/reducers/search.reducer";
+import {getNewReleasesAction} from "../../app/redux/reducers/search.reducer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,7 +78,7 @@ export const NewReleases = () => {
 
   useEffect(() => {
     if (user) {
-      dispatch(getNewReleases(user));
+      dispatch(getNewReleasesAction(user));
     }
   }, [dispatch, user]);
 
@@ -86,19 +86,21 @@ export const NewReleases = () => {
     <Box>
       {loadingNewReleases ? (
         <Box className={styles.placeholderSpace}>
-          <CircularProgress />
+          <CircularProgress color="secondary" />
         </Box>
       ) : (
         <Box>
-          <Typography variant="h3" className={styles.sectionTitle}>
-            New Releases
-          </Typography>
+          <Box className={styles.sectionTitle}>
+            <Typography variant="h3">New Releases</Typography>
+          </Box>
           <Carousel responsive={responsive} partialVisible={true}>
-            {newReleases.map((s) => (
-              <Grid item id={s.id}>
-                <SongCard song={s} />
-              </Grid>
-            ))}
+            {newReleases
+              .filter((s) => s.isNewRelease)
+              .map((s) => (
+                <Grid item id={s.id}>
+                  <SongCard song={s} />
+                </Grid>
+              ))}
           </Carousel>
         </Box>
       )}

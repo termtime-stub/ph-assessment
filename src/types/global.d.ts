@@ -62,8 +62,9 @@ declare global {
     artists: Artist[];
     name: string;
     id: string;
-    isInLibrary: boolean = false;
+    isInLibrary: boolean;
     duration_ms: number;
+    isNewRelease: boolean;
   }
 
   interface TracksResponse {

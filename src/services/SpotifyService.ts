@@ -84,7 +84,8 @@ export class SpotifyService {
     if (res) {
       return {
         ...res,
-        items: res.data.albums.items.map((s) => albumToTrack(s, false)),
+
+        items: res.data.albums.items.map((s) => albumToTrack(s, false, true)),
       };
     }
   }

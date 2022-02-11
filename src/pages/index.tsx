@@ -19,6 +19,11 @@ const darkMode = createTheme({
       light: "#1fdf64",
       dark: "#1fdf64",
     },
+    primary: {
+      main: "#fff",
+      light: "#fff",
+      dark: "#fff",
+    },
   },
   components: {
     MuiCssBaseline: {
@@ -31,8 +36,13 @@ const darkMode = createTheme({
       },
     },
     MuiAppBar: {
+      defaultProps: {
+        enableColorOnDark: true,
+      },
       styleOverrides: {
-        colorPrimary: "#201060",
+        root: {
+          backgroundColor: "#000",
+        },
       },
     },
 

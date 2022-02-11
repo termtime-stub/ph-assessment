@@ -19,7 +19,7 @@ export const LoadingSpinner = () => {
   return (
     <Box>
       <Box className={styles.spinner}>
-        <CircularProgress />
+        <CircularProgress color="secondary" />
       </Box>
     </Box>
   );

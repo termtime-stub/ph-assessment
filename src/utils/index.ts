@@ -1,4 +1,8 @@
-export const albumToTrack = (album: Album, isInLibrary: boolean): Track => {
+export const albumToTrack = (
+  album: Album,
+  isInLibrary: boolean,
+  isNewRelease: boolean
+): Track => {
   return {
     album,
     name: album.name,
@@ -7,5 +11,6 @@ export const albumToTrack = (album: Album, isInLibrary: boolean): Track => {
     id: album.id,
     isInLibrary,
     items: [],
+    isNewRelease,
   };
 };
