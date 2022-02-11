@@ -103,9 +103,11 @@ export const LibraryPage = () => {
   return (
     <Box>
       <NavBar />
-      <Grid container>
+      <Grid container columns={{xs: 4, sm: 8, md: 12, lg: 12}}>
         {songs.map((s) => (
-          <SongCard song={s} />
+          <Grid item xs={6} sm={4} md={4} lg={3}>
+            <SongCard song={s} />
+          </Grid>
         ))}
       </Grid>
     </Box>
