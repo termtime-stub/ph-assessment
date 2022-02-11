@@ -28,7 +28,7 @@ export const SearchResults = () => {
       <SearchResultHeader />
       <List>
         {results.map((s) => (
-          <SongListItem song={s} />
+          <SongListItem key={s.id} song={s} />
         ))}
       </List>
     </Box>

@@ -13,8 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
     cardContainer: {
       backgroundColor: "#262626",
       margin: "3vw",
-      height: "45vh",
-      width: "18vw",
+      // height: "45vh",
       boxShadow: "10px 10px 37px -8px rgba(0,0,0,0.75)",
       borderRadius: "10px",
       userSelect: "none",
@@ -66,6 +65,15 @@ export const SongCard = ({song}: SongCardProps) => {
           marginTop: 2,
           marginLeft: 2,
           marginRight: 2,
+          sm: {
+            width: "50vw",
+          },
+          md: {
+            width: "30vw",
+          },
+          lg: {
+            width: "18vw",
+          },
         }}
       >
         <CardMedia

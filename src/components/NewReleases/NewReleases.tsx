@@ -60,12 +60,17 @@ export const NewReleases = () => {
       partialVisibilityGutter: 40,
     },
     desktop: {
-      breakpoint: {max: 3000, min: 1024},
+      breakpoint: {max: 3000, min: 1400},
       items: 4,
       partialVisibilityGutter: 30,
     },
     tablet: {
-      breakpoint: {max: 1024, min: 464},
+      breakpoint: {max: 1400, min: 1024},
+      items: 3,
+      partialVisibilityGutter: 20,
+    },
+    middleTablet: {
+      breakpoint: {max: 1024, min: 838},
       items: 2,
       partialVisibilityGutter: 20,
     },
@@ -91,7 +96,9 @@ export const NewReleases = () => {
       ) : (
         <Box>
           <Box className={styles.sectionTitle}>
-            <Typography variant="h3">New Releases</Typography>
+            <Typography variant="h3" sx={{sm: {fontSize: 12}}}>
+              New Releases
+            </Typography>
           </Box>
           <Carousel responsive={responsive} partialVisible={true}>
             {newReleases
