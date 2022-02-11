@@ -7,6 +7,7 @@ import {APP_ROUTES} from "../constants";
 import {DashboardPage} from "./DashboardPage/DashboardPage";
 import React from "react";
 import {LibraryPage} from "./LibraryPage/LibraryPage";
+import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 
 const darkMode = createTheme({
   palette: {
@@ -103,7 +104,8 @@ const App = () => {
                   <LibraryPage />
                 </ProtectedRoute>
               }
-            ></Route>
+            />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </React.Fragment>

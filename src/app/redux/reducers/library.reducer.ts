@@ -101,7 +101,7 @@ const librarySlice = createSlice({
       .addCase(saveSongAction.rejected, (state, action) => {
         state.error = action.error;
       })
-      // Save
+      // Save songs gotten from search and new release to keep track of them
       .addCase(searchSpotifyAction.fulfilled, (state, action) => {
         const songsToAdd = action.payload.results.filter(
           (s) => state.songs.findIndex((s2) => s2.id === s.id) === -1

@@ -97,7 +97,7 @@ export const NewReleases = () => {
             {newReleases
               .filter((s) => s.isNewRelease)
               .map((s) => (
-                <Grid item id={s.id}>
+                <Grid item key={s.id}>
                   <SongCard song={s} />
                 </Grid>
               ))}
