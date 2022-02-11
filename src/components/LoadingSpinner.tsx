@@ -11,18 +11,13 @@ const useStyles = makeStyles((theme) =>
       transform: "translate(-50%, -50%)",
       justifyContent: "center",
     },
-    container: {
-      flex: 1,
-      flexGrow: 1,
-      backgroundColor: "#201640",
-    },
   })
 );
 
 export const LoadingSpinner = () => {
   const styles = useStyles();
   return (
-    <Box className={styles.container}>
+    <Box>
       <Box className={styles.spinner}>
         <CircularProgress />
       </Box>

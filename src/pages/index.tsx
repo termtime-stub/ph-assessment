@@ -6,6 +6,7 @@ import {ProtectedRoute} from "../components/ProtectedRoute";
 import {APP_ROUTES} from "../constants";
 import {DashboardPage} from "./DashboardPage/DashboardPage";
 import React from "react";
+import {LibraryPage} from "./LibraryPage/LibraryPage";
 
 const darkMode = createTheme({
   palette: {
@@ -84,6 +85,14 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path={APP_ROUTES.LIBRARY}
+              element={
+                <ProtectedRoute>
+                  <LibraryPage />
+                </ProtectedRoute>
+              }
+            ></Route>
           </Routes>
         </BrowserRouter>
       </React.Fragment>
