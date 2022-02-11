@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 
 import {makeStyles, createStyles} from "@mui/styles";
 import {useAppSelector} from "../../app/hooks";
+import {SearchResultHeader} from "./SearchResultHeader";
 import {SongListItem} from "./SongListItem";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -98,6 +99,7 @@ export const SearchResults = () => {
 
   return (
     <Box className={styles.container}>
+      <SearchResultHeader />
       <List>
         {searchResults.map((s) => (
           <SongListItem song={s} />

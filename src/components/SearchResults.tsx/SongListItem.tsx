@@ -17,6 +17,7 @@ interface SongListItemProps {
 const useStyles = makeStyles((theme) =>
   createStyles({
     container: {
+      borderRadius: 5,
       paddingLeft: 16,
       paddingRight: 16,
       paddingTop: 5,
@@ -24,7 +25,6 @@ const useStyles = makeStyles((theme) =>
       height: 70,
       display: "flex",
       flexDirection: "row",
-      transitionDuration: "0.2s",
       "&:hover": {
         backgroundColor: "#2f2c37",
       },
@@ -36,6 +36,11 @@ const useStyles = makeStyles((theme) =>
       display: "flex",
       alignContent: "center",
     },
+    gridItem: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+    },
   })
 );
 
@@ -44,21 +49,21 @@ export const SongListItem = ({song}: SongListItemProps) => {
   return (
     <Box className={styles.container}>
       <Grid container columns={7}>
-        <Grid item xs={1}>
+        <Grid className={styles.gridItem} item xs={1}>
           <Avatar variant="square" src={song.album?.picture} />
         </Grid>
-        <Grid item xs={2}>
-          <Typography>{song.title}</Typography>
+        <Grid className={styles.gridItem} item xs={2}>
+          <Typography variant="h6">{song.title}</Typography>
         </Grid>
-        <Grid item xs={2}>
-          <Typography>{song.album?.title}</Typography>
+        <Grid className={styles.gridItem} item xs={2}>
+          <Typography variant="subtitle2">{song.album?.title}</Typography>
         </Grid>
-        <Grid item xs={1}>
-          <Typography>
+        <Grid className={styles.gridItem} item xs={1}>
+          <Typography variant="subtitle2">
             {moment.utc(song.duration).format("hh:mm:ss")}
           </Typography>
         </Grid>
-        <Grid item xs={1}>
+        <Grid className={styles.gridItem} item xs={1}>
           <AddOrRemoveSongButton song={song} />
         </Grid>
       </Grid>

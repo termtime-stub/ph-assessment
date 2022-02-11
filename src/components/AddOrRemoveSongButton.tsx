@@ -1,4 +1,7 @@
-import {Button} from "@mui/material";
+import {Favorite, FavoriteBorder} from "@mui/icons-material";
+import {Box, IconButton} from "@mui/material";
+
+import {makeStyles, createStyles} from "@mui/styles";
 
 interface AddOrRemoveSongButtonProps {
   song: SongMetadata;
@@ -6,8 +9,20 @@ interface AddOrRemoveSongButtonProps {
 
 export const AddOrRemoveSongButton = ({song}: AddOrRemoveSongButtonProps) => {
   if (song.isInLibrary) {
-    return <Button color="error">Remove from library</Button>;
+    return (
+      <Box>
+        <IconButton size="medium" color="error">
+          <Favorite />
+        </IconButton>
+      </Box>
+    );
   } else {
-    return <Button color="secondary">Save to library</Button>;
+    return (
+      <Box>
+        <IconButton size="medium" color="secondary">
+          <FavoriteBorder />
+        </IconButton>
+      </Box>
+    );
   }
 };

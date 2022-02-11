@@ -38,6 +38,22 @@ const darkMode = createTheme({
       defaultProps: {
         fontFamily: "Helvetica",
       },
+      styleOverrides: {
+        // Header titles
+        subtitle1: {
+          color: "#a7a7a7",
+          fontWeight: "bold",
+        },
+        //Song artist/album name & duration
+        subtitle2: {
+          color: "#a7a7a7",
+        },
+        //Song titles
+        h6: {
+          color: "#e6e6e6",
+          fontSize: 16,
+        },
+      },
     },
   },
 });

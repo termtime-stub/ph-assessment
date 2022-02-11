@@ -12,8 +12,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     cardContainer: {
       backgroundColor: "#262626",
-      width: "18vw",
-      // height: "400px",
       margin: "3vw",
       boxShadow: "10px 10px 37px -8px rgba(0,0,0,0.75)",
       borderRadius: "10px",
@@ -24,11 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     cardImage: {
-      padding: "16px",
-      borderRadius: "20px",
-      height: "18vw",
-      objectFit: "contain",
-      backgroundSize: "contain",
+      marginLeft: 8,
+      marginRight: 6,
+      marginTop: 16,
+      borderRadius: "10px",
+      width: "16vw",
+      objectFit: "cover",
+      backgroundSize: "cover",
+      boxShadow: "0px 0px 36px -8px rgba(0,0,0,0.75)",
     },
     cardTitle: {
       marginLeft: "8px",
@@ -51,7 +52,7 @@ export const SongCard = ({song}: SongCardProps) => {
       className={styles.cardContainer}
       sx={{transition: "all 0.2s ease-out"}}
     >
-      <Box>
+      <Box sx={{display: "flex", flexDirection: "column"}}>
         <CardMedia
           component="img"
           className={styles.cardImage}
