@@ -20,7 +20,7 @@ export const NoSearch = () => {
   return (
     <Box className={styles.container}>
       <Typography className={styles.text} variant="h5">
-        Search results will be shown down here
+        Search results will be shown here, start searching!
       </Typography>
     </Box>
   );

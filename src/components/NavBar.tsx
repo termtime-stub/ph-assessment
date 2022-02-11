@@ -114,7 +114,7 @@ export const NavBar = () => {
       );
     } else if (location.pathname === APP_ROUTES.LIBRARY) {
       return (
-        <Box component="div" sx={{flexGrow: 1}}>
+        <Box component="div" sx={{flexGrow: 1, textAlign: "center"}}>
           <Typography variant="h4">My Library</Typography>
         </Box>
       );
