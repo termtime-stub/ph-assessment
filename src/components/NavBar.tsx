@@ -1,6 +1,5 @@
-import axios from "axios";
-import {useAuth0, User} from "@auth0/auth0-react";
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {useAuth0} from "@auth0/auth0-react";
+import {Link, useLocation} from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -9,27 +8,23 @@ import {
   Box,
   Avatar,
   Theme,
-  TextField,
   InputBase,
-  FormControl,
 } from "@mui/material";
 
 import {makeStyles, createStyles} from "@mui/styles";
 import {APP_ROUTES} from "../constants/index";
-import {SpotifyService} from "../services/SpotifyService";
-import {AppDispatch} from "../app/store";
 import {useAppDispatch} from "../app/hooks";
 import {searchSpotifyAction} from "../app/redux/reducers/search.reducer";
 import {useState} from "react";
 import {Logout, Search} from "@mui/icons-material";
 import {IconButton} from "@mui/material";
+import {LogoutMenu} from "./LogoutMenu";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     avatar: {
       width: 35,
       height: 35,
-      margin: 10,
     },
     searchContainer: {
       backgroundColor: "#fff",
@@ -92,7 +87,10 @@ export const NavBar = () => {
               value={query}
               onChange={(e) => onChange(e.target.value)}
               sx={{
-                ml: 5,
+                ml: {
+                  xs: 1,
+                  md: 5,
+                },
                 flex: 1,
                 input: {
                   color: "black",
@@ -104,7 +102,13 @@ export const NavBar = () => {
             />
             <IconButton
               type="submit"
-              sx={{p: "10px", mr: 5}}
+              sx={{
+                p: "10px",
+                mr: {
+                  xs: 1,
+                  md: 5,
+                },
+              }}
               aria-label="search"
             >
               <Search />
@@ -153,16 +157,57 @@ export const NavBar = () => {
         className={styles.navbarContainer}
       >
         <Toolbar>
-          <Avatar src={user?.picture} className={styles.avatar} />
-          <Typography variant="h6">{user?.nickname}</Typography>
+          <Avatar
+            src={user?.picture}
+            className={styles.avatar}
+            sx={{margin: {xs: 0, md: "10px"}}}
+          />
+          <Typography variant="h6" sx={{display: {xs: "none", md: "flex"}}}>
+            {user?.nickname}
+          </Typography>
 
           {renderMidNavbar()}
-          {renderLinkNav()}
-          <Box sx={{marginLeft: 5}}>
-            <Button color="inherit" onClick={() => logout()}>
-              <Logout sx={{marginRight: 1}} />
-              Sign out
-            </Button>
+          <Box
+            sx={{
+              display: {
+                xs: "none",
+                md: "flex",
+              },
+              flexDirection: "row",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              {renderLinkNav()}
+            </Box>
+            <Box
+              sx={{
+                marginLeft: {
+                  xs: 0,
+                  md: 5,
+                },
+              }}
+            >
+              <Button color="inherit" onClick={() => logout()}>
+                <Logout
+                  sx={{
+                    marginRight: {
+                      xs: 0,
+                      md: 1,
+                    },
+                  }}
+                />
+                Sign out
+              </Button>
+            </Box>
+          </Box>
+          <Box sx={{display: {xs: "flex", md: "none"}}}>
+            <LogoutMenu />
           </Box>
         </Toolbar>
       </AppBar>
