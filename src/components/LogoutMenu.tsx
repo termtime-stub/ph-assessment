@@ -8,10 +8,16 @@ import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import {Divider} from "@mui/material";
+import {APP_ROUTES} from "../constants/index";
+import {useLocation, useNavigate} from "react-router-dom";
+import {useAuth0} from "@auth0/auth0-react";
 
 export const LogoutMenu = () => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const {logout} = useAuth0();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -84,9 +90,29 @@ export const LogoutMenu = () => {
                     aria-labelledby="composition-button"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem onClick={handleClose}>My Library</MenuItem>
+                    <MenuItem
+                      onClick={(e) => {
+                        handleClose(e);
+                        if (location.pathname === APP_ROUTES.DASHBOARD) {
+                          navigate(APP_ROUTES.LIBRARY);
+                        } else if (location.pathname === APP_ROUTES.LIBRARY) {
+                          navigate(APP_ROUTES.DASHBOARD);
+                        }
+                      }}
+                    >
+                      {location.pathname === APP_ROUTES.DASHBOARD
+                        ? "My Library"
+                        : "Dashboard"}
+                    </MenuItem>
                     <Divider />
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    <MenuItem
+                      onClick={(e) => {
+                        handleClose(e);
+                        logout();
+                      }}
+                    >
+                      Logout
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
