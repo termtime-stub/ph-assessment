@@ -1,9 +1,6 @@
 import axios from "axios";
 import {albumToTrack} from "../utils";
 
-interface ErrorResponse {
-  error: {message: string; statusCode: number};
-}
 export class SpotifyService {
   async search(q: string, token: string, refreshToken: string) {
     const endpoint = `https://api.spotify.com/v1/search?q=${q}&type=track`;

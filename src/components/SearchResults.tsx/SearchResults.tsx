@@ -1,9 +1,5 @@
-import {Avatar, Button, List, Theme} from "@mui/material";
+import {List} from "@mui/material";
 import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
 
 import {makeStyles, createStyles} from "@mui/styles";
 import {useAppSelector} from "../../app/hooks";
