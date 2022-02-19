@@ -51,10 +51,11 @@ export const removeSongAction = createAsyncThunk(
 
     const newSongs = [...state.library.songs];
 
-    newSongs.splice(
-      newSongs.findIndex((s) => s.id === song.id),
-      1
-    );
+    const indexOfSong = newSongs.findIndex((s) => s.id === song.id);
+
+    const modifiedSong = {...newSongs[indexOfSong], isInLibrary: false};
+
+    newSongs.splice(indexOfSong, 1, modifiedSong);
 
     const response: LibraryPayload = {
       songs: newSongs,

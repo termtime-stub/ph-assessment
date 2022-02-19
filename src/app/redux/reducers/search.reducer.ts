@@ -132,7 +132,7 @@ const searchSlice = createSlice({
           action.payload.modifiedSong!,
           state.newReleases,
           state.results,
-          true
+          false
         );
       })
       .addCase(saveSongAction.fulfilled, (state, action) => {
