@@ -40,13 +40,18 @@ export const SearchResultHeader = () => {
         <Grid item xs={1} className={styles.col}>
           <Typography variant="subtitle1"></Typography>
         </Grid>
-        <Grid item xs={2} className={styles.col}>
+        <Grid item xs={3} md={2} className={styles.col}>
           <Typography variant="subtitle1">Title</Typography>
         </Grid>
         <Grid item xs={2} className={styles.col}>
           <Typography variant="subtitle1">Album</Typography>
         </Grid>
-        <Grid item xs={1} className={styles.col}>
+        <Grid
+          item
+          xs={1}
+          className={styles.col}
+          sx={{display: {xs: "none", md: "flex"}}}
+        >
           <Typography variant="subtitle1">Duration</Typography>
         </Grid>
       </Grid>

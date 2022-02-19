@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) =>
       paddingRight: 16,
       paddingTop: 5,
       paddingBottom: 5,
-      height: 70,
       display: "flex",
       flexDirection: "row",
       "&:hover": {
@@ -29,12 +28,15 @@ const useStyles = makeStyles((theme) =>
     avatar: {
       width: 25,
     },
-    title: {
-      display: "flex",
+    text: {
       alignContent: "center",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      display: "-webkit-box",
+      lineClamp: 2,
+      boxOrient: "vertical",
     },
     gridItem: {
-      display: "flex",
       flexDirection: "column",
       padding: 10,
       textOverflow: "ellipsis",
@@ -45,7 +47,11 @@ const useStyles = makeStyles((theme) =>
 export const SongListItem = ({song}: SongListItemProps) => {
   const styles = useStyles();
   return (
-    <Box className={styles.container} id={song.id}>
+    <Box
+      className={styles.container}
+      id={song.id}
+      sx={{height: {xs: 100, md: 70}}}
+    >
       <Grid container columns={7}>
         <Grid className={styles.gridItem} item xs={1}>
           <Avatar
@@ -53,13 +59,22 @@ export const SongListItem = ({song}: SongListItemProps) => {
             src={song.album.images.length !== 0 ? song.album.images[0].url : ""}
           />
         </Grid>
-        <Grid className={styles.gridItem} item xs={2}>
-          <Typography variant="h6">{song.name}</Typography>
+        <Grid className={styles.gridItem} item xs={3} md={2}>
+          <Typography variant="h6" className={styles.text}>
+            {song.name}
+          </Typography>
         </Grid>
         <Grid className={styles.gridItem} item xs={2}>
-          <Typography variant="subtitle2">{song.album.name}</Typography>
+          <Typography variant="subtitle2" className={styles.text}>
+            {song.album.name}
+          </Typography>
         </Grid>
-        <Grid className={styles.gridItem} item xs={1}>
+        <Grid
+          className={styles.gridItem}
+          item
+          xs={1}
+          sx={{display: {xs: "none", md: "flex"}}}
+        >
           <Typography variant="subtitle2">
             {moment.utc(song.duration_ms).format("mm:ss")}
           </Typography>
