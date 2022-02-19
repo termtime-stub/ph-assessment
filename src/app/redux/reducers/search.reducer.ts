@@ -1,10 +1,10 @@
-import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {SearchPayload, SearchState} from "../../../types/state";
-import axios from "axios";
 import {SpotifyService} from "../../../services/SpotifyService";
 import {User} from "@auth0/auth0-react";
 import {removeSongAction, saveSongAction} from "./library.reducer";
 import {RootState} from "../../store";
+import {Auth0Service} from "../../../services/Auth0Service";
 
 const initialState: SearchState = {
   query: "",
@@ -17,27 +17,23 @@ const initialState: SearchState = {
 export const searchSpotifyAction = createAsyncThunk(
   "search/searchSpotify",
   async ({user, query}: SearchSpotifyActionParams, api) => {
-    const endpoint = `https://dev-kxznetwf.us.auth0.com/api/v2/users/${encodeURIComponent(
-      user?.sub ?? ""
-    )}`;
+    const resp = await Auth0Service.getSpotifyToken(user);
 
-    const spotifyTokenRes = await axios.get<Auth0UserResponse>(endpoint, {
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_AUTH0_IDENTITY_MANAGER_TOKEN}`,
-      },
-    });
+    if (!resp) {
+      const response: SearchPayload = {
+        error: "Could not get spotify token",
+        results: [],
+      };
 
-    if (!spotifyTokenRes) {
-      throw new Error("Could not get spotify token");
+      return api.rejectWithValue(response);
     }
 
-    const spotifyToken = spotifyTokenRes.data.identities[0].access_token;
-    const refreshToken = spotifyTokenRes.data.identities[0].refresh_token;
+    const {spotifyToken, spotifyRefreshToken} = resp;
 
     const res = await new SpotifyService().search(
       query,
       spotifyToken,
-      refreshToken
+      spotifyRefreshToken
     );
 
     const state = api.getState() as RootState;
@@ -59,26 +55,22 @@ export const searchSpotifyAction = createAsyncThunk(
 export const getNewReleasesAction = createAsyncThunk(
   "search/getNewReleases",
   async (user: User, api) => {
-    const endpoint = `https://dev-kxznetwf.us.auth0.com/api/v2/users/${encodeURIComponent(
-      user?.sub ?? ""
-    )}`;
+    const resp = await Auth0Service.getSpotifyToken(user);
 
-    const spotifyTokenRes = await axios.get<Auth0UserResponse>(endpoint, {
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_AUTH0_IDENTITY_MANAGER_TOKEN}`,
-      },
-    });
+    if (!resp) {
+      const response: SearchPayload = {
+        error: "Could not get spotify token",
+        results: [],
+      };
 
-    if (!spotifyTokenRes) {
-      throw new Error("Could not get spotify token");
+      return api.rejectWithValue(response);
     }
 
-    const spotifyToken = spotifyTokenRes.data.identities[0].access_token;
-    const refreshToken = spotifyTokenRes.data.identities[0].refresh_token;
+    const {spotifyToken, spotifyRefreshToken} = resp;
 
     const res = await new SpotifyService().getNewReleases(
       spotifyToken,
-      refreshToken
+      spotifyRefreshToken
     );
 
     const state = api.getState() as RootState;
