@@ -2,7 +2,11 @@ import axios from "axios";
 import {albumToTrack} from "../utils";
 
 export class SpotifyService {
-  async search(q: string, token: string, refreshToken: string) {
+  static async search(
+    q: string,
+    token: string,
+    refreshToken: string
+  ): Promise<TracksResponse | undefined> {
     const endpoint = `https://api.spotify.com/v1/search?q=${q}&type=track`;
 
     let res = await axios.get<SearchResponse>(endpoint, {
@@ -42,7 +46,10 @@ export class SpotifyService {
     }
   }
 
-  async getNewReleases(token: string, refreshToken: string) {
+  static async getNewReleases(
+    token: string,
+    refreshToken: string
+  ): Promise<NewReleasesResponseTranslated | undefined> {
     const endpoint = "https://api.spotify.com/v1/browse/new-releases";
 
     let res = await axios.get<NewReleasesResponse>(endpoint, {
@@ -80,8 +87,6 @@ export class SpotifyService {
 
     if (res) {
       return {
-        ...res,
-
         items: res.data.albums.items.map((s) => albumToTrack(s, false, true)),
       };
     }

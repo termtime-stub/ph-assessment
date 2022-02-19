@@ -83,6 +83,11 @@ declare global {
     error?: AxiosError;
   }
 
+  interface NewReleasesResponseTranslated {
+    items: Track[];
+    error?: AxiosError;
+  }
+
   interface AxiosError {
     message: string;
     status: number;

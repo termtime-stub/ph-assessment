@@ -15,7 +15,7 @@ export const loadLibrary = createAsyncThunk("library/loadLibrary", async () => {
     songs: [],
   };
 
-  return await response;
+  return response;
 });
 
 interface SaveSongProps {
@@ -40,7 +40,7 @@ export const saveSongAction = createAsyncThunk(
       modifiedSong: song,
     };
 
-    return await response;
+    return response;
   }
 );
 
@@ -52,6 +52,16 @@ export const removeSongAction = createAsyncThunk(
     const newSongs = [...state.library.songs];
 
     const indexOfSong = newSongs.findIndex((s) => s.id === song.id);
+
+    if (indexOfSong === -1) {
+      // Song not found, send back current state.
+      const response: LibraryPayload = {
+        songs: newSongs,
+        modifiedSong: undefined,
+      };
+
+      return response;
+    }
 
     const modifiedSong = {...newSongs[indexOfSong], isInLibrary: false};
 

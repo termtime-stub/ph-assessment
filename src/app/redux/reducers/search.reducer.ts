@@ -30,7 +30,7 @@ export const searchSpotifyAction = createAsyncThunk(
 
     const {spotifyToken, spotifyRefreshToken} = resp;
 
-    const res = await new SpotifyService().search(
+    const res = await SpotifyService.search(
       query,
       spotifyToken,
       spotifyRefreshToken
@@ -68,7 +68,7 @@ export const getNewReleasesAction = createAsyncThunk(
 
     const {spotifyToken, spotifyRefreshToken} = resp;
 
-    const res = await new SpotifyService().getNewReleases(
+    const res = await SpotifyService.getNewReleases(
       spotifyToken,
       spotifyRefreshToken
     );
