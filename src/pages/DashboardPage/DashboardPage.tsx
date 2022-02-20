@@ -8,6 +8,7 @@ import {useEffect} from "react";
 import {useAppSelector, useAppDispatch} from "../../app/hooks";
 import {getLibraryAction} from "../../app/redux/reducers/library.reducer";
 import {getNewReleasesAction} from "../../app/redux/reducers/search.reducer";
+import {useSnackbar} from "notistack";
 
 export const DashboardPage = () => {
   const {user} = useAuth0();

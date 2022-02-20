@@ -2,9 +2,9 @@ import {User} from "@auth0/auth0-react";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {LibraryState, LibraryPayload} from "../../../types/state";
 import {RootState} from "../../store";
-import {getNewReleasesAction, searchSpotifyAction} from "./search.reducer";
 import {DataPersistenceService} from "../../../services/DataPersistenceService";
 import {logoutFromDispatch} from "./auth.reducer";
+import {thunkErrorHandler} from "../../../utils";
 
 const initialState: LibraryState = {
   loadingLibrary: false,
@@ -64,8 +64,7 @@ export const saveSongAction = createAsyncThunk(
       return response;
     } catch (error) {
       const e = error as Error;
-      console.log(e);
-      return api.rejectWithValue(e.message);
+      return thunkErrorHandler(e, api.rejectWithValue);
     }
   }
 );
@@ -103,8 +102,7 @@ export const removeSongAction = createAsyncThunk(
       return await response;
     } catch (error) {
       const e = error as Error;
-      console.log(e);
-      return api.rejectWithValue(e);
+      return thunkErrorHandler(e, api.rejectWithValue);
     }
   }
 );
@@ -122,8 +120,7 @@ export const getLibraryAction = createAsyncThunk(
       return payload;
     } catch (error) {
       const e = error as Error;
-      console.log(e);
-      return api.rejectWithValue(e);
+      return thunkErrorHandler(e, api.rejectWithValue);
     }
   }
 );
@@ -144,8 +141,7 @@ const librarySlice = createSlice({
       })
       .addCase(loadLibrary.rejected, (state, action) => {
         state.loadingLibrary = false;
-        state.error =
-          "Your library could not be loaded, please try again later.";
+        state.error = "Your library could not be loaded.";
       })
       ///
       .addCase(removeSongAction.pending, (state) => {
@@ -173,8 +169,7 @@ const librarySlice = createSlice({
       })
       .addCase(removeSongAction.rejected, (state, action) => {
         state.loadingRemove = false;
-        state.error =
-          "Could not remove the song from your library, please try again later.";
+        state.error = "Could not remove the song from your library.";
       })
       ///
       .addCase(saveSongAction.fulfilled, (state, action) => {
@@ -198,8 +193,7 @@ const librarySlice = createSlice({
         state.songs = newSongState;
       })
       .addCase(saveSongAction.rejected, (state, action) => {
-        state.error =
-          "Could not add the song to your library, please try again later.";
+        state.error = "Could not add the song to your library.";
       })
       .addCase(getLibraryAction.pending, (state, action) => {
         state.loadingLibrary = true;
@@ -213,20 +207,6 @@ const librarySlice = createSlice({
         state.error = "Could not get your library, please try again later";
         state.loadingLibrary = false;
       })
-      // Save songs gotten from search and new release to keep track of them
-      // .addCase(searchSpotifyAction.fulfilled, (state, action) => {
-      //   const songsToAdd = action.payload.results.filter(
-      //     (s) => state.songs.findIndex((s2) => s2.id === s.id) === -1
-      //   );
-      //   state.songs = [...songsToAdd, ...state.songs];
-      // })
-      // .addCase(getNewReleasesAction.fulfilled, (state, action) => {
-      //   const songsToAdd = action.payload.results.filter(
-      //     (s) => state.songs.findIndex((s2) => s2.id === s.id) === -1
-      //   );
-
-      //   state.songs = [...songsToAdd, ...state.songs];
-      // })
       .addCase(logoutFromDispatch, (state) => {
         state.songs = [];
         state.error = undefined;

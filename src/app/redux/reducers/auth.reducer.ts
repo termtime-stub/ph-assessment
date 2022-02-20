@@ -5,6 +5,7 @@ import {RootState} from "../../store";
 import {Auth0Service} from "../../../services/Auth0.service";
 import {SpotifyService} from "../../../services/Spotify.service";
 import {User} from "@auth0/auth0-react";
+import {thunkErrorHandler} from "../../../utils";
 
 const initialState: AuthState = {
   shouldLogOut: false,
@@ -48,31 +49,36 @@ const getNewTokenIfExpired = async (
 export const getSpotifyToken = createAsyncThunk(
   "auth/getSpotifyToken",
   async ({user}: GetSpotifyTokenParams, api) => {
-    const state = api.getState() as RootState;
+    try {
+      const state = api.getState() as RootState;
 
-    const timeDiff = moment(state.auth.expireDateMs).diff(moment(), "s");
+      const timeDiff = moment(state.auth.expireDateMs).diff(moment(), "s");
 
-    const refreshTk = state.auth.refreshToken;
-    const currentAccessTk = state.auth.spotifyToken;
+      const refreshTk = state.auth.refreshToken;
+      const currentAccessTk = state.auth.spotifyToken;
 
-    if (refreshTk && currentAccessTk) {
-      // If the token is about to expire or already expired, refresh token
-      return getNewTokenIfExpired(timeDiff, refreshTk, currentAccessTk);
-    } else {
-      // Token does not exist, get token from Auth0
-      // This will happen when the app first starts
-      const tkRes = await Auth0Service.getSpotifyToken(user);
+      if (refreshTk && currentAccessTk) {
+        // If the token is about to expire or already expired, refresh token
+        return getNewTokenIfExpired(timeDiff, refreshTk, currentAccessTk);
+      } else {
+        // Token does not exist, get token from Auth0
+        // This will happen when the app first starts
+        const tkRes = await Auth0Service.getSpotifyToken(user);
 
-      const {spotifyRefreshToken, spotifyToken, expireDateMs} = tkRes;
+        const {spotifyRefreshToken, spotifyToken, expireDateMs} = tkRes;
 
-      const auth0TokenTimeDiff = moment(expireDateMs).diff(moment(), "s");
+        const auth0TokenTimeDiff = moment(expireDateMs).diff(moment(), "s");
 
-      // Check if auth0's token is still valid, if not, refresh
-      return getNewTokenIfExpired(
-        auth0TokenTimeDiff,
-        spotifyRefreshToken,
-        spotifyToken
-      );
+        // Check if auth0's token is still valid, if not, refresh
+        return getNewTokenIfExpired(
+          auth0TokenTimeDiff,
+          spotifyRefreshToken,
+          spotifyToken
+        );
+      }
+    } catch (error) {
+      const e = error as Error;
+      return thunkErrorHandler(e, api.rejectWithValue);
     }
   }
 );
@@ -98,6 +104,9 @@ const authSlice = createSlice({
         state.refreshToken = refreshToken || state.refreshToken;
         state.spotifyToken = spotifyToken || state.spotifyToken;
         state.expireDateMs = expireDateMs || state.expireDateMs;
+      })
+      .addCase(getSpotifyToken.rejected, (state) => {
+        state.error = "Could not authenticate with Spotify.";
       });
   },
 });

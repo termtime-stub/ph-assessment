@@ -8,6 +8,10 @@ import {DashboardPage} from "./DashboardPage/DashboardPage";
 import React from "react";
 import {LibraryPage} from "./LibraryPage/LibraryPage";
 import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
+import {useEffect} from "react";
+import {useSnackbar} from "notistack";
+import {useAppSelector, usePrevious} from "../app/hooks";
+import {FireExtinguisherOutlined} from "@mui/icons-material";
 
 const darkMode = createTheme({
   palette: {
@@ -73,6 +77,40 @@ const darkMode = createTheme({
 
 const App = () => {
   const {isLoading} = useAuth0();
+  const {enqueueSnackbar} = useSnackbar();
+  const authError = useAppSelector((s) => s.auth.error);
+  const libraryError = useAppSelector((s) => s.library.error);
+  const searchError = useAppSelector((s) => s.search.error);
+
+  const prevError = usePrevious({authError, libraryError, searchError});
+
+  // Effect for error handling with snackbars
+  useEffect(() => {
+    // Get the error that just changed
+    let newlyDispatchedError;
+    if (prevError?.authError !== authError) {
+      newlyDispatchedError = authError;
+    } else if (prevError?.libraryError !== libraryError) {
+      newlyDispatchedError = libraryError;
+    } else if (prevError?.searchError !== searchError) {
+      newlyDispatchedError = searchError;
+    }
+
+    if (newlyDispatchedError) {
+      enqueueSnackbar(newlyDispatchedError.toString(), {
+        variant: "error",
+      });
+    }
+  }, [
+    authError,
+    searchError,
+    enqueueSnackbar,
+    libraryError,
+    prevError?.authError,
+    prevError?.libraryError,
+    prevError?.searchError,
+  ]);
+
   return (
     <ThemeProvider theme={darkMode}>
       <React.Fragment>

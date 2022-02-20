@@ -9,6 +9,7 @@ import {
 } from "./library.reducer";
 import {RootState} from "../../store";
 import {logoutFromDispatch, getSpotifyToken} from "./auth.reducer";
+import {thunkErrorHandler} from "../../../utils";
 
 const initialState: SearchState = {
   query: "",
@@ -26,60 +27,70 @@ interface SearchSpotifyActionParams {
 export const searchSpotifyAction = createAsyncThunk(
   "search/searchSpotify",
   async ({user, query}: SearchSpotifyActionParams, api) => {
-    // Keep token updated
-    await api.dispatch(getSpotifyToken({user}));
+    try {
+      // Keep token updated
+      await api.dispatch(getSpotifyToken({user}));
 
-    const {spotifyToken, refreshToken} = (api.getState() as RootState).auth;
+      const {spotifyToken, refreshToken} = (api.getState() as RootState).auth;
 
-    if (!spotifyToken || !refreshToken) {
-      api.dispatch(logoutFromDispatch());
-      throw Error("You are not signed in, please sign in again");
+      if (!spotifyToken || !refreshToken) {
+        api.dispatch(logoutFromDispatch());
+        throw Error("You are not signed in, please sign in again");
+      }
+
+      const res = await SpotifyService.search(query, spotifyToken);
+
+      const state = api.getState() as RootState;
+      const librarySongs = state.library.songs;
+
+      const syncedItems = res?.items.map((s) =>
+        syncUpdateFromSearch(s, librarySongs)
+      );
+
+      const response: SearchPayload = {
+        results: syncedItems ?? [],
+        query,
+      };
+      // The value we return becomes the `fulfilled` action payload
+      return await response;
+    } catch (error) {
+      const e = error as Error;
+      return thunkErrorHandler(e, api.rejectWithValue);
     }
-
-    const res = await SpotifyService.search(query, spotifyToken);
-
-    const state = api.getState() as RootState;
-    const librarySongs = state.library.songs;
-
-    const syncedItems = res?.items.map((s) =>
-      syncUpdateFromSearch(s, librarySongs)
-    );
-
-    const response: SearchPayload = {
-      results: syncedItems ?? [],
-      query,
-    };
-    // The value we return becomes the `fulfilled` action payload
-    return await response;
   }
 );
 
 export const getNewReleasesAction = createAsyncThunk(
   "search/getNewReleases",
   async (user: User, api) => {
-    await api.dispatch(getSpotifyToken({user}));
+    try {
+      await api.dispatch(getSpotifyToken({user}));
 
-    const {spotifyToken, refreshToken} = (api.getState() as RootState).auth;
+      const {spotifyToken, refreshToken} = (api.getState() as RootState).auth;
 
-    if (!spotifyToken || !refreshToken) {
-      api.dispatch(logoutFromDispatch());
-      throw Error("You are not signed in, please sign in again");
+      if (!spotifyToken || !refreshToken) {
+        api.dispatch(logoutFromDispatch());
+        throw Error("You are not signed in, please sign in again");
+      }
+
+      const res = await SpotifyService.getNewReleases(spotifyToken);
+
+      const state = api.getState() as RootState;
+      const librarySongs = state.library.songs;
+
+      const syncedItems = res?.items.map((s) =>
+        syncUpdateFromSearch(s, librarySongs)
+      );
+
+      const response: SearchPayload = {
+        results: syncedItems ?? [],
+      };
+
+      return await response;
+    } catch (error) {
+      const e = error as Error;
+      return thunkErrorHandler(e, api.rejectWithValue);
     }
-
-    const res = await SpotifyService.getNewReleases(spotifyToken);
-
-    const state = api.getState() as RootState;
-    const librarySongs = state.library.songs;
-
-    const syncedItems = res?.items.map((s) =>
-      syncUpdateFromSearch(s, librarySongs)
-    );
-
-    const response: SearchPayload = {
-      results: syncedItems ?? [],
-    };
-
-    return await response;
   }
 );
 
@@ -99,7 +110,7 @@ const searchSlice = createSlice({
       })
       .addCase(searchSpotifyAction.rejected, (state, action) => {
         state.loadingSearch = false;
-        state.error = action.error;
+        state.error = "Error getting search results.";
       })
       .addCase(getNewReleasesAction.pending, (state) => {
         state.loadingNewReleases = true;
@@ -110,7 +121,7 @@ const searchSlice = createSlice({
         state.loadingNewReleases = false;
       })
       .addCase(getNewReleasesAction.rejected, (state, action) => {
-        state.error = action.error;
+        state.error = "Could not get new releases.";
         state.loadingNewReleases = false;
       })
       //Save and remove song from library

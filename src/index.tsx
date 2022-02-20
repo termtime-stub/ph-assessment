@@ -5,18 +5,21 @@ import {store} from "./app/store";
 import {Provider} from "react-redux";
 import * as serviceWorker from "./serviceWorker";
 import {Auth0Provider} from "@auth0/auth0-react";
+import {SnackbarProvider} from "notistack";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Auth0Provider
-      domain={process.env.REACT_APP_AUTH0_DOMAIN!}
-      clientId={process.env.REACT_APP_AUTH0_CLIENT_ID!}
-      redirectUri={window.location.origin}
-    >
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </Auth0Provider>
+    <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
+      <Auth0Provider
+        domain={process.env.REACT_APP_AUTH0_DOMAIN!}
+        clientId={process.env.REACT_APP_AUTH0_CLIENT_ID!}
+        redirectUri={window.location.origin}
+      >
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </Auth0Provider>
+    </SnackbarProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
