@@ -4,6 +4,7 @@ import {LibraryState, LibraryPayload} from "../../../types/state";
 import {RootState} from "../../store";
 import {getNewReleasesAction, searchSpotifyAction} from "./search.reducer";
 import {DataPersistenceService} from "../../../services/DataPersistenceService";
+import {logoutFromDispatch} from "./auth.reducer";
 
 const initialState: LibraryState = {
   loadingLibrary: false,
@@ -31,75 +32,99 @@ interface GetLibraryProps {
 export const saveSongAction = createAsyncThunk(
   "library/saveSong",
   async ({user, song}: UpdateSongProps, api) => {
-    const state = api.getState() as RootState;
+    try {
+      const state = api.getState() as RootState;
 
-    const existingSongIndex = state.library.songs.findIndex(
-      (s) => s.id === song.id
-    );
-
-    let modifiedSong;
-    // let newLibrarySongState;
-
-    if (existingSongIndex === -1) {
-      // Song is new, add to firestore
-      modifiedSong = await DataPersistenceService.saveSongInFirestore(
-        song,
-        user
+      const existingSongIndex = state.library.songs.findIndex(
+        (s) => s.id === song.id
       );
-    } else {
-      // Song already exists, update state in firestore
-      modifiedSong = await DataPersistenceService.updateSongLibraryAddStatus(
-        song,
-        user,
-        false
-      );
+
+      let modifiedSong;
+      // let newLibrarySongState;
+
+      if (existingSongIndex === -1) {
+        // Song is new, add to firestore
+        modifiedSong = await DataPersistenceService.saveSongInFirestore(
+          song,
+          user
+        );
+      } else {
+        // Song already exists, update state in firestore
+        modifiedSong = await DataPersistenceService.updateSongLibraryAddStatus(
+          song,
+          user,
+          false
+        );
+      }
+
+      const response: LibraryPayload = {
+        modifiedSong,
+      };
+
+      return response;
+    } catch (error) {
+      const e = error as Error;
+      console.log(e);
+      return api.rejectWithValue(e.message);
     }
-
-    const response: LibraryPayload = {
-      modifiedSong,
-    };
-
-    return response;
   }
 );
 
 export const removeSongAction = createAsyncThunk(
   "library/removeSong",
   async ({user, song}: UpdateSongProps, api) => {
-    const state = api.getState() as RootState;
-    const indexOfSong = state.library.songs.findIndex((s) => s.id === song.id);
-
-    if (indexOfSong === -1) {
-      // Song not found, send back current state.
-
-      //TODO: get latest state of this song from firestore and send that one back instead, if that fails, then return error
-      const response: LibraryPayload = {
-        modifiedSong: song,
-      };
-
-      return response;
-    }
-
-    // Sync changes to firestore
-    const modifiedSong =
-      await DataPersistenceService.updateSongLibraryAddStatus(
-        song,
-        user,
-        false
+    try {
+      const state = api.getState() as RootState;
+      const indexOfSong = state.library.songs.findIndex(
+        (s) => s.id === song.id
       );
 
-    const response: LibraryPayload = {
-      modifiedSong,
-    };
+      if (indexOfSong === -1) {
+        // Song not found, mark as already removed
+        const response: LibraryPayload = {
+          modifiedSong: {...song, isInLibrary: false},
+        };
 
-    return await response;
+        return response;
+      }
+
+      // Sync changes to firestore
+      const modifiedSong =
+        await DataPersistenceService.updateSongLibraryAddStatus(
+          song,
+          user,
+          false
+        );
+
+      const response: LibraryPayload = {
+        modifiedSong,
+      };
+
+      return await response;
+    } catch (error) {
+      const e = error as Error;
+      console.log(e);
+      return api.rejectWithValue(e);
+    }
   }
 );
 
 export const getLibraryAction = createAsyncThunk(
   "library/getLibrary",
   async ({user}: GetLibraryProps, api) => {
-    const tracks = await DataPersistenceService.getLibraryFromFirestore(user);
+    try {
+      const tracks = await DataPersistenceService.getLibraryFromFirestore(user);
+
+      const payload: LibraryPayload = {
+        songs: tracks,
+      };
+
+      return payload;
+    } catch (error) {
+      const e = error as Error;
+      console.log(e);
+      return api.rejectWithValue(e);
+    }
   }
 );
 
@@ -175,21 +200,39 @@ const librarySlice = createSlice({
       .addCase(saveSongAction.rejected, (state, action) => {
         state.error =
           "Could not add the song to your library, please try again later.";
-      });
-    // Save songs gotten from search and new release to keep track of them
-    // .addCase(searchSpotifyAction.fulfilled, (state, action) => {
-    //   const songsToAdd = action.payload.results.filter(
-    //     (s) => state.songs.findIndex((s2) => s2.id === s.id) === -1
-    //   );
-    //   state.songs = [...songsToAdd, ...state.songs];
-    // })
-    // .addCase(getNewReleasesAction.fulfilled, (state, action) => {
-    //   const songsToAdd = action.payload.results.filter(
-    //     (s) => state.songs.findIndex((s2) => s2.id === s.id) === -1
-    //   );
+      })
+      .addCase(getLibraryAction.pending, (state, action) => {
+        state.loadingLibrary = true;
+        state.error = undefined;
+      })
+      .addCase(getLibraryAction.fulfilled, (state, action) => {
+        state.songs = action.payload.songs!;
+        state.loadingLibrary = false;
+      })
+      .addCase(getLibraryAction.rejected, (state, action) => {
+        state.error = "Could not get your library, please try again later";
+        state.loadingLibrary = false;
+      })
+      // Save songs gotten from search and new release to keep track of them
+      // .addCase(searchSpotifyAction.fulfilled, (state, action) => {
+      //   const songsToAdd = action.payload.results.filter(
+      //     (s) => state.songs.findIndex((s2) => s2.id === s.id) === -1
+      //   );
+      //   state.songs = [...songsToAdd, ...state.songs];
+      // })
+      // .addCase(getNewReleasesAction.fulfilled, (state, action) => {
+      //   const songsToAdd = action.payload.results.filter(
+      //     (s) => state.songs.findIndex((s2) => s2.id === s.id) === -1
+      //   );
 
-    //   state.songs = [...songsToAdd, ...state.songs];
-    // });
+      //   state.songs = [...songsToAdd, ...state.songs];
+      // })
+      .addCase(logoutFromDispatch, (state) => {
+        state.songs = [];
+        state.error = undefined;
+        state.loadingLibrary = false;
+        state.loadingRemove = false;
+      });
   },
 });
 

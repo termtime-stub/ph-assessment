@@ -1,5 +1,5 @@
 import {Favorite, FavoriteBorder} from "@mui/icons-material";
-import {Box, IconButton} from "@mui/material";
+import {Box, IconButton, Tooltip, Typography} from "@mui/material";
 import {useAppDispatch} from "../app/hooks";
 import {useAuth0} from "@auth0/auth0-react";
 import {
@@ -30,17 +30,27 @@ export const AddOrRemoveSongButton = ({song}: AddOrRemoveSongButtonProps) => {
   if (song.isInLibrary) {
     return (
       <Box>
-        <IconButton size="medium" color="secondary" onClick={removeSong}>
-          <Favorite />
-        </IconButton>
+        <Tooltip
+          title={
+            <Typography variant="body1">Remove from my library</Typography>
+          }
+        >
+          <IconButton size="medium" color="secondary" onClick={removeSong}>
+            <Favorite />
+          </IconButton>
+        </Tooltip>
       </Box>
     );
   } else {
     return (
       <Box>
-        <IconButton size="medium" color="secondary" onClick={saveSong}>
-          <FavoriteBorder />
-        </IconButton>
+        <Tooltip
+          title={<Typography variant="body1">Add to my library</Typography>}
+        >
+          <IconButton size="medium" color="secondary" onClick={saveSong}>
+            <FavoriteBorder />
+          </IconButton>
+        </Tooltip>
       </Box>
     );
   }

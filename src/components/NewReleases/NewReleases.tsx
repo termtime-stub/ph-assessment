@@ -27,8 +27,8 @@ export const NewReleases = () => {
   const {newReleases, loadingNewReleases} = useAppSelector(
     (state) => state.search
   );
-  const {user} = useAuth0();
-  const dispatch = useAppDispatch();
+
+  const {loadingLibrary} = useAppSelector((state) => state.library);
 
   const responsive = {
     superLargeDesktop: {
@@ -58,15 +58,9 @@ export const NewReleases = () => {
     },
   };
 
-  useEffect(() => {
-    if (user) {
-      dispatch(getNewReleasesAction(user));
-    }
-  }, [dispatch, user]);
-
   return (
     <Box>
-      {loadingNewReleases ? (
+      {loadingNewReleases || loadingLibrary ? (
         <Box className={styles.placeholderSpace}>
           <CircularProgress color="secondary" />
         </Box>
