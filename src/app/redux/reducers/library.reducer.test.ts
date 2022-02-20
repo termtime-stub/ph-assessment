@@ -10,8 +10,8 @@ import {getNewReleasesAction, searchSpotifyAction} from "./search.reducer";
 import {
   Auth0Service,
   GetSpotifyTokenResponse,
-} from "../../../services/Auth0Service";
-import {SpotifyService} from "../../../services/SpotifyService";
+} from "../../../services/Auth0.service";
+import {SpotifyService} from "../../../services/Spotify.service";
 
 const testArtist: Artist = {
   id: "1",
