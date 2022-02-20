@@ -13,10 +13,6 @@ import {getNewReleasesAction} from "../../app/redux/reducers/search.reducer";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     carousel: {},
-    sectionTitle: {
-      marginTop: "25px",
-      marginLeft: "50px",
-    },
     placeholderSpace: {
       display: "flex",
       flexDirection: "row",
@@ -76,7 +72,15 @@ export const NewReleases = () => {
         </Box>
       ) : (
         <Box>
-          <Box className={styles.sectionTitle}>
+          <Box
+            sx={{
+              marginTop: "25px",
+              marginLeft: {
+                xs: "20px",
+                md: "50px",
+              },
+            }}
+          >
             <Typography variant="h3" sx={{sm: {fontSize: 12}}}>
               New Releases
             </Typography>
