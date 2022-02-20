@@ -19,7 +19,7 @@ export const getSpotifyToken = createAsyncThunk(
   async ({user}: GetSpotifyTokenParams, api) => {
     const state = api.getState() as RootState;
 
-    const timeDiff = moment(state.auth.expireDate).diff(moment(), "s");
+    const timeDiff = moment(state.auth.expireDateMs).diff(moment(), "s");
 
     const refreshTk = state.auth.refreshToken;
 
@@ -35,13 +35,13 @@ export const getSpotifyToken = createAsyncThunk(
         // get a new refresh token for the new access token
         data = {
           spotifyToken: newAccessToken,
-          expireDate: moment().add(1, "hour").toDate(),
+          expireDateMs: moment().add(1, "hour").valueOf(),
         };
       } else {
         data = {
           spotifyToken: state.auth.spotifyToken,
           refreshToken: state.auth.refreshToken,
-          expireDate: moment().add(1, "hour").toDate(),
+          expireDateMs: moment().add(1, "hour").valueOf(),
         };
       }
     } else {
@@ -54,7 +54,7 @@ export const getSpotifyToken = createAsyncThunk(
       data = {
         spotifyToken,
         refreshToken: spotifyRefreshToken,
-        expireDate: moment().add(1, "hour").toDate(),
+        expireDateMs: moment().add(1, "hour").valueOf(),
       };
     }
 
@@ -78,11 +78,15 @@ const authSlice = createSlice({
       .addCase(getSpotifyToken.fulfilled, (state, action) => {
         state.error = undefined;
 
-        const {refreshToken, spotifyToken, expireDate} = action.payload;
+        const {
+          refreshToken,
+          spotifyToken,
+          expireDateMs: expireDate,
+        } = action.payload;
 
         state.refreshToken = refreshToken || state.refreshToken;
         state.spotifyToken = spotifyToken || state.spotifyToken;
-        state.expireDate = expireDate || state.expireDate;
+        state.expireDateMs = expireDate || state.expireDateMs;
       });
   },
 });

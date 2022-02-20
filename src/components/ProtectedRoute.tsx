@@ -10,7 +10,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({children}) => {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      loginWithRedirect();
+      const redirectUri = process.env.REACT_APP_LOGIN_REDIRECT;
+
+      console.log({redirectUri});
+      loginWithRedirect({
+        redirectUri,
+      });
     }
   }, [isAuthenticated, isLoading, loginWithRedirect]);
 

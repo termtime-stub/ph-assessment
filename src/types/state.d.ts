@@ -39,12 +39,12 @@ export interface LibraryPayload extends BasePayload {
 export interface AuthState extends BaseState {
   spotifyToken?: string;
   refreshToken?: string;
-  expireDate?: Date;
-  shouldLogOut: boolean;
+  expireDateMs?: number;
+  shouldLogOut?: boolean;
 }
 
 export interface AuthPayload extends BasePayload {
   spotifyToken?: string;
   refreshToken?: string;
-  expireDate?: Date;
+  expireDateMs?: number;
 }

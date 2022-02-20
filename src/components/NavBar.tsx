@@ -15,16 +15,10 @@ import {makeStyles, createStyles} from "@mui/styles";
 import {APP_ROUTES} from "../constants/index";
 import {useAppDispatch, useAppSelector} from "../app/hooks";
 import {searchSpotifyAction} from "../app/redux/reducers/search.reducer";
-import {useState, useEffect} from "react";
+import {useState, useEffect, useCallback} from "react";
 import {Logout, Search} from "@mui/icons-material";
 import {IconButton} from "@mui/material";
 import {LogoutMenu} from "./LogoutMenu";
-import {SpotifyService} from "../services/Spotify.service";
-import {Auth0Service} from "../services/Auth0.service";
-import {
-  authReducerInitialState,
-  getSpotifyToken,
-} from "../app/redux/reducers/auth.reducer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -80,12 +74,19 @@ export const NavBar = () => {
   const dispatch = useAppDispatch();
   const {shouldLogOut} = useAppSelector((s) => s.auth);
 
+  const appLogout = useCallback(() => {
+    const returnTo = process.env.REACT_APP_LOGIN_REDIRECT;
+    logout({
+      returnTo,
+    });
+  }, [logout]);
+
   useEffect(() => {
     // This effects handles a possible edge case in which the auth state gets set to the initial state but the user is still logged into by auth0
     if (isAuthenticated && shouldLogOut) {
-      logout();
+      appLogout();
     }
-  }, [isAuthenticated, logout, shouldLogOut]);
+  }, [appLogout, isAuthenticated, shouldLogOut]);
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -209,7 +210,7 @@ export const NavBar = () => {
                 },
               }}
             >
-              <Button color="inherit" onClick={() => logout()}>
+              <Button color="inherit" onClick={() => appLogout()}>
                 <Logout
                   sx={{
                     marginRight: {
