@@ -4,7 +4,7 @@ import {SpotifyService} from "../../../services/Spotify.service";
 import {User} from "@auth0/auth0-react";
 import {removeSongAction, saveSongAction} from "./library.reducer";
 import {RootState} from "../../store";
-import {Auth0Service} from "../../../services/Auth0.service";
+import {logoutFromDispatch, getSpotifyToken} from "./auth.reducer";
 
 const initialState: SearchState = {
   query: "",
@@ -14,27 +14,25 @@ const initialState: SearchState = {
   newReleases: [],
 };
 
+interface SearchSpotifyActionParams {
+  user: User;
+  query: string;
+}
+
 export const searchSpotifyAction = createAsyncThunk(
   "search/searchSpotify",
   async ({user, query}: SearchSpotifyActionParams, api) => {
-    const resp = await Auth0Service.getSpotifyToken(user);
+    // Keep token updated
+    await api.dispatch(getSpotifyToken({user}));
 
-    if (!resp) {
-      const response: SearchPayload = {
-        error: "Could not get spotify token",
-        results: [],
-      };
+    const {spotifyToken, refreshToken} = (api.getState() as RootState).auth;
 
-      return api.rejectWithValue(response);
+    if (!spotifyToken || !refreshToken) {
+      api.dispatch(logoutFromDispatch());
+      throw Error("You are not signed in, please sign in again");
     }
 
-    const {spotifyToken, spotifyRefreshToken} = resp;
-
-    const res = await SpotifyService.search(
-      query,
-      spotifyToken,
-      spotifyRefreshToken
-    );
+    const res = await SpotifyService.search(query, spotifyToken, refreshToken);
 
     const state = api.getState() as RootState;
     const librarySongs = state.library.songs;
@@ -55,23 +53,16 @@ export const searchSpotifyAction = createAsyncThunk(
 export const getNewReleasesAction = createAsyncThunk(
   "search/getNewReleases",
   async (user: User, api) => {
-    const resp = await Auth0Service.getSpotifyToken(user);
+    await api.dispatch(getSpotifyToken({user}));
 
-    if (!resp) {
-      const response: SearchPayload = {
-        error: "Could not get spotify token",
-        results: [],
-      };
+    const {spotifyToken, refreshToken} = (api.getState() as RootState).auth;
 
-      return api.rejectWithValue(response);
+    if (!spotifyToken || !refreshToken) {
+      api.dispatch(logoutFromDispatch());
+      throw Error("You are not signed in, please sign in again");
     }
 
-    const {spotifyToken, spotifyRefreshToken} = resp;
-
-    const res = await SpotifyService.getNewReleases(
-      spotifyToken,
-      spotifyRefreshToken
-    );
+    const res = await SpotifyService.getNewReleases(spotifyToken, refreshToken);
 
     const state = api.getState() as RootState;
     const librarySongs = state.library.songs;

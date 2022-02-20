@@ -93,7 +93,7 @@ export const removeSongAction = createAsyncThunk(
 );
 
 const librarySlice = createSlice({
-  name: "search",
+  name: "library",
   initialState,
   reducers: {},
   extraReducers: (builder) => {

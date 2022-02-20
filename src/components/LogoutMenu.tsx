@@ -11,6 +11,8 @@ import {Divider} from "@mui/material";
 import {APP_ROUTES} from "../constants/index";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
+import {useAppDispatch} from "../app/hooks";
+import {logoutFromDispatch} from "../app/redux/reducers/auth.reducer";
 
 export const LogoutMenu = () => {
   const [open, setOpen] = React.useState(false);
@@ -18,6 +20,7 @@ export const LogoutMenu = () => {
   const {logout} = useAuth0();
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -43,7 +46,7 @@ export const LogoutMenu = () => {
     }
   }
 
-  // return focus to the button when we transitioned from !open -> open
+  // return focus to the button when transitioned from !open -> open
   const prevOpen = React.useRef(open);
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
@@ -108,6 +111,7 @@ export const LogoutMenu = () => {
                     <MenuItem
                       onClick={(e) => {
                         handleClose(e);
+                        dispatch(logoutFromDispatch());
                         logout();
                       }}
                     >

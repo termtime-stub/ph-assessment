@@ -78,6 +78,7 @@ describe("Library Reducer - ", () => {
       const user: User = {};
       const songToAdd = testSong3;
       const initialState: RootState = {
+        auth: {},
         library: {
           songs: songList,
           loadingLibrary: false,
@@ -114,6 +115,7 @@ describe("Library Reducer - ", () => {
       const user: User = {};
       const songToAdd = testSong3;
       const initialState: RootState = {
+        auth: {},
         library: {
           songs: [],
           loadingLibrary: false,
@@ -160,6 +162,7 @@ describe("Library Reducer - ", () => {
       const user: User = {};
       const songToRemove = testSong3;
       const initialState: RootState = {
+        auth: {},
         library: {
           songs: songList,
           loadingLibrary: false,
@@ -194,6 +197,7 @@ describe("Library Reducer - ", () => {
       const user: User = {};
       const songToRemove = testSong3;
       const initialState: RootState = {
+        auth: {},
         library: {
           songs: songList,
           loadingLibrary: false,
@@ -226,6 +230,7 @@ describe("Library Reducer - ", () => {
       const user: User = {};
       const songToRemove = testSong3;
       const initialState: RootState = {
+        auth: {},
         library: {
           songs: songList,
           loadingLibrary: false,
@@ -276,6 +281,7 @@ describe("Library Reducer - ", () => {
       };
 
       const rootState: RootState = {
+        auth: {},
         library: libraryReducerInitialState,
         search: {
           loadingNewReleases: false,
@@ -341,6 +347,7 @@ describe("Library Reducer - ", () => {
       };
 
       const rootState: RootState = {
+        auth: {},
         library: libraryReducerInitialState,
         search: {
           loadingNewReleases: false,
@@ -416,6 +423,7 @@ describe("Library Reducer - ", () => {
       };
 
       const rootState: RootState = {
+        auth: {},
         library: libraryReducerInitialState,
         search: {
           loadingNewReleases: false,
@@ -481,6 +489,7 @@ describe("Library Reducer - ", () => {
       };
 
       const rootState: RootState = {
+        auth: {},
         library: libraryReducerInitialState,
         search: {
           loadingNewReleases: false,

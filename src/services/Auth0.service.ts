@@ -7,9 +7,7 @@ export interface GetSpotifyTokenResponse {
 }
 
 export class Auth0Service {
-  static async getSpotifyToken(
-    user: User
-  ): Promise<GetSpotifyTokenResponse | undefined> {
+  static async getSpotifyToken(user: User): Promise<GetSpotifyTokenResponse> {
     const endpoint = `https://dev-kxznetwf.us.auth0.com/api/v2/users/${encodeURIComponent(
       user?.sub ?? ""
     )}`;
@@ -18,13 +16,7 @@ export class Auth0Service {
       headers: {
         Authorization: `Bearer ${process.env.REACT_APP_AUTH0_IDENTITY_MANAGER_TOKEN}`,
       },
-      // Prevent axios from throwing errors
-      validateStatus: (status) => true,
     });
-
-    if (!spotifyTokenRes) {
-      return undefined;
-    }
 
     const spotifyToken = spotifyTokenRes.data.identities[0].access_token;
     const spotifyRefreshToken =

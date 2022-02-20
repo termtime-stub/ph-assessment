@@ -1,23 +1,6 @@
 export {};
 
 declare global {
-  type CSSProperties = {
-    [key: string]: React.CSSProperties;
-  };
-
-  interface SongMetadata {
-    title: string;
-
-    artist: string;
-    id: string;
-    isInLibrary: boolean;
-    album: {
-      picture: string;
-      title: string;
-    };
-    duration: number;
-  }
-
   // Auth0
   interface Identity {
     provider: string;
@@ -30,12 +13,11 @@ declare global {
     identities: Identity[];
   }
 
-  interface SearchSpotifyActionParams {
-    user: User;
-    query: string;
-  }
-
   // Spotify
+
+  interface RefreshTokenResponse {
+    access_token: string;
+  }
 
   interface Artist {
     id: string;

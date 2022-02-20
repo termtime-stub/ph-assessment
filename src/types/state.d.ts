@@ -34,3 +34,17 @@ export interface LibraryPayload extends BasePayload {
   songs?: Track[];
   modifiedSong?: Track;
 }
+
+// Auth Reducer
+export interface AuthState extends BaseState {
+  spotifyToken?: string;
+  refreshToken?: string;
+  expireDate?: Date;
+  shouldLogOut: boolean;
+}
+
+export interface AuthPayload extends BasePayload {
+  spotifyToken?: string;
+  refreshToken?: string;
+  expireDate?: Date;
+}
