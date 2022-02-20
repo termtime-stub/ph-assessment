@@ -8,7 +8,7 @@ import moment from "moment";
 import {AddOrRemoveSongButton} from "../AddOrRemoveSongButton";
 
 interface SongListItemProps {
-  song: Track;
+  song: TrackWithAlbum;
 }
 
 const useStyles = makeStyles((theme) =>

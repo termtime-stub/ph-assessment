@@ -32,7 +32,7 @@ export const searchSpotifyAction = createAsyncThunk(
       throw Error("You are not signed in, please sign in again");
     }
 
-    const res = await SpotifyService.search(query, spotifyToken, refreshToken);
+    const res = await SpotifyService.search(query, spotifyToken);
 
     const state = api.getState() as RootState;
     const librarySongs = state.library.songs;
@@ -62,7 +62,7 @@ export const getNewReleasesAction = createAsyncThunk(
       throw Error("You are not signed in, please sign in again");
     }
 
-    const res = await SpotifyService.getNewReleases(spotifyToken, refreshToken);
+    const res = await SpotifyService.getNewReleases(spotifyToken);
 
     const state = api.getState() as RootState;
     const librarySongs = state.library.songs;
@@ -74,7 +74,7 @@ export const getNewReleasesAction = createAsyncThunk(
     const response: SearchPayload = {
       results: syncedItems ?? [],
     };
-    // The value we return becomes the `fulfilled` action payload
+
     return await response;
   }
 );
@@ -130,9 +130,9 @@ const searchSlice = createSlice({
 });
 
 export const syncUpdateFromLibrary = (
-  songToSearch: Track,
-  newReleases: Track[],
-  searchResults: Track[],
+  songToSearch: TrackWithAlbum,
+  newReleases: TrackWithAlbum[],
+  searchResults: TrackWithAlbum[],
   newLibraryState: boolean
 ) => {
   const indexInNewReleases = newReleases.findIndex(
@@ -158,8 +158,8 @@ export const syncUpdateFromLibrary = (
 };
 
 export const syncUpdateFromSearch = (
-  recentlyFetchedSong: Track,
-  librarySongs: Track[]
+  recentlyFetchedSong: TrackWithAlbum,
+  librarySongs: TrackWithAlbum[]
 ) => {
   let syncedSong = {...recentlyFetchedSong};
 

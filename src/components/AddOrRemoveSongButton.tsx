@@ -8,7 +8,7 @@ import {
 } from "../app/redux/reducers/library.reducer";
 
 interface AddOrRemoveSongButtonProps {
-  song: Track;
+  song: TrackWithAlbum;
 }
 
 export const AddOrRemoveSongButton = ({song}: AddOrRemoveSongButtonProps) => {

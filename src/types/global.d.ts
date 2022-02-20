@@ -1,7 +1,12 @@
 export {};
 
 declare global {
-  // Auth0
+  interface AxiosError {
+    message: string;
+    status: number;
+  }
+
+  //#region Auth0
   interface Identity {
     provider: string;
     access_token: string;
@@ -11,13 +16,14 @@ declare global {
   }
   interface Auth0UserResponse {
     identities: Identity[];
+    last_login: string;
   }
 
-  // Spotify
+  //#endregion
 
-  interface RefreshTokenResponse {
-    access_token: string;
-  }
+  //#region Spotify
+
+  //#region API Models
 
   interface Artist {
     id: string;
@@ -38,9 +44,8 @@ declare global {
     images: URLImage[];
     name: string;
   }
+
   interface Track {
-    album: Album;
-    items: Track[];
     artists: Artist[];
     name: string;
     id: string;
@@ -49,33 +54,58 @@ declare global {
     isNewRelease: boolean;
   }
 
-  interface TracksResponse {
+  interface AlbumWithTracks extends Album {
+    tracks: AlbumWithTracksResponse;
+  }
+
+  interface TrackWithAlbum extends Track {
+    album: Album;
+  }
+  //#endregion
+
+  //#region Responses
+
+  interface PaginationFields {
     href: string;
     limit: number;
     offset: number;
+    next: number | null;
     previous: number | null;
     total: number;
+  }
+  interface AlbumWithTracksResponse extends PaginationFields {
     items: Track[];
+  }
+
+  interface AlbumsResponse extends PaginationFields {
+    items: Album[];
   }
 
   interface NewReleasesResponse {
-    albums: {
-      items: Album[];
-    };
-    error?: AxiosError;
+    albums: AlbumsResponse;
   }
 
-  interface NewReleasesResponseTranslated {
-    items: Track[];
-    error?: AxiosError;
+  interface AlbumsWithTracksResponse {
+    albums: AlbumWithTracks[];
   }
 
-  interface AxiosError {
-    message: string;
-    status: number;
+  interface NewReleasesResponseWithTracks extends PaginationFields {
+    items: TrackWithAlbum[];
   }
+
+  interface TracksWithAlbumResponse extends PaginationFields {
+    items: TrackWithAlbum[];
+  }
+
   interface SearchResponse {
-    tracks: TracksResponse;
+    tracks: TracksWithAlbumResponse;
     error?: AxiosError;
   }
+
+  interface RefreshTokenResponse {
+    access_token: string;
+  }
+  //#endregion
+
+  //#endregion
 }

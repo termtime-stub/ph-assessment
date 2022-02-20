@@ -90,7 +90,7 @@ export const NewReleases = () => {
               .filter((s) => s.isNewRelease)
               .map((s) => (
                 <Grid item key={s.id}>
-                  <SongCard song={s} />
+                  <SongCard track={s} />
                 </Grid>
               ))}
           </Carousel>

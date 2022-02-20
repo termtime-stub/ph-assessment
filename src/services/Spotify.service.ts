@@ -1,41 +1,104 @@
 import axios from "axios";
-import {albumToTrack} from "../utils";
 import {Buffer} from "buffer";
 
 export class SpotifyService {
-  static getRefreshToken(accessToken: string): Promise<string> {
-    return Promise.resolve("STUB");
-  }
+  /**
+   * Searches tracks with the specified query
+   * @param query
+   * @param accessToken
+   * @returns
+   */
   static async search(
-    q: string,
-    token: string,
-    refreshToken: string
-  ): Promise<TracksResponse> {
-    const endpoint = `https://api.spotify.com/v1/search?q=${q}&type=track`;
+    query: string,
+    accessToken: string
+  ): Promise<TracksWithAlbumResponse> {
+    const endpoint = `https://api.spotify.com/v1/search?q=${query}&type=track`;
 
     let res = await axios.get<SearchResponse>(endpoint, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
     return res.data.tracks;
   }
 
+  static async getTracksFromAlbums(
+    albumsIds: string[],
+    accessToken: string,
+    maxSongsPerAlbum?: number
+  ): Promise<TrackWithAlbum[]> {
+    const endpoint = "https://api.spotify.com/v1/albums";
+    // API only allows up to 20 comma-separated album ids
+    const trimmedAlbums = albumsIds.slice(0, 20);
+    let res = await axios.get<AlbumsWithTracksResponse>(endpoint, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        ids: trimmedAlbums.join(","),
+      },
+    });
+
+    // Tracks brought from this endpoint do not have album data.
+    // Merge album data with track data and flatten to normalize.
+    const tracksWithAlbum: TrackWithAlbum[] = res.data.albums
+      .map((a) =>
+        a.tracks.items.slice(0, maxSongsPerAlbum).map(
+          (t): TrackWithAlbum => ({
+            ...t,
+            album: {
+              album_type: a.album_type,
+              artists: a.artists,
+              external_urls: a.external_urls,
+              id: a.id,
+              images: a.images,
+              name: a.name,
+            },
+          })
+        )
+      )
+      .flat();
+
+    return tracksWithAlbum;
+  }
+
+  /**
+   * Gets new release albums
+   * @param accessToken
+   * @returns
+   */
   static async getNewReleases(
-    token: string,
-    refreshToken: string
-  ): Promise<NewReleasesResponseTranslated> {
+    accessToken: string
+  ): Promise<NewReleasesResponseWithTracks> {
     const endpoint = "https://api.spotify.com/v1/browse/new-releases";
 
     let res = await axios.get<NewReleasesResponse>(endpoint, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
+    const albumIds = res.data.albums.items.map((a) => a.id);
+
+    const maxSongsPerAlbum = 2;
+
+    const tracks = await this.getTracksFromAlbums(
+      albumIds,
+      accessToken,
+      maxSongsPerAlbum
+    );
+
+    const {href, limit, next, offset, previous, total} = res.data.albums;
+
     return {
-      items: res.data.albums.items.map((s) => albumToTrack(s, false, true)),
+      href,
+      limit,
+      next,
+      offset,
+      previous,
+      total,
+      items: tracks.map((t) => ({...t, isNewRelease: true})),
     };
   }
 

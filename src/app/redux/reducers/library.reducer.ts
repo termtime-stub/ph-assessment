@@ -19,14 +19,18 @@ export const loadLibrary = createAsyncThunk("library/loadLibrary", async () => {
   return response;
 });
 
-interface SaveSongProps {
+interface UpdateSongProps {
   user: User;
-  song: Track;
+  song: TrackWithAlbum;
+}
+
+interface GetLibraryProps {
+  user: User;
 }
 
 export const saveSongAction = createAsyncThunk(
   "library/saveSong",
-  async ({user, song}: SaveSongProps, api) => {
+  async ({user, song}: UpdateSongProps, api) => {
     const state = api.getState() as RootState;
 
     const existingSongIndex = state.library.songs.findIndex(
@@ -61,7 +65,7 @@ export const saveSongAction = createAsyncThunk(
 
 export const removeSongAction = createAsyncThunk(
   "library/removeSong",
-  async ({user, song}: SaveSongProps, api) => {
+  async ({user, song}: UpdateSongProps, api) => {
     const state = api.getState() as RootState;
     const indexOfSong = state.library.songs.findIndex((s) => s.id === song.id);
 
@@ -89,6 +93,13 @@ export const removeSongAction = createAsyncThunk(
     };
 
     return await response;
+  }
+);
+
+export const getLibraryAction = createAsyncThunk(
+  "library/getLibrary",
+  async ({user}: GetLibraryProps, api) => {
+    const tracks = await DataPersistenceService.getLibraryFromFirestore(user);
   }
 );
 

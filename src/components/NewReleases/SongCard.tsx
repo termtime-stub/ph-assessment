@@ -48,9 +48,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface SongCardProps {
-  song: Track;
+  track: TrackWithAlbum;
 }
-export const SongCard = ({song}: SongCardProps) => {
+export const SongCard = ({track: song}: SongCardProps) => {
   const styles = useStyles();
   return (
     <Card

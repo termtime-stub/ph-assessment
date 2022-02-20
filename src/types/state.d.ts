@@ -1,5 +1,4 @@
 import {SerializedError} from "@reduxjs/toolkit";
-import {ActionType} from "../app/redux/constants/actionTypes";
 
 interface BasePayload {
   error?: Error | string;
@@ -12,27 +11,27 @@ interface BaseState {
 // Search Reducer
 export interface SearchState extends BaseState {
   query: string;
-  results: Track[];
-  newReleases: Track[];
+  results: TrackWithAlbum[];
+  newReleases: TrackWithAlbum[];
   loadingNewReleases: boolean;
   loadingSearch: boolean;
 }
 
 export interface SearchPayload extends BasePayload {
-  results: Track[];
+  results: TrackWithAlbum[];
   query?: string;
 }
 
 // Library Reducer
 export interface LibraryState extends BaseState {
-  songs: Track[];
+  songs: TrackWithAlbum[];
   loadingLibrary: boolean;
   loadingRemove: boolean;
 }
 
 export interface LibraryPayload extends BasePayload {
-  songs?: Track[];
-  modifiedSong?: Track;
+  songs?: TrackWithAlbum[];
+  modifiedSong?: TrackWithAlbum;
 }
 
 // Auth Reducer

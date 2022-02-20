@@ -30,36 +30,33 @@ const testAlbum: Album = {
   name: "The test album",
 };
 
-const testSong1: Track = {
+const testSong1: TrackWithAlbum = {
   album: testAlbum,
   artists: [testArtist],
   duration_ms: 50000,
   id: "1",
   isInLibrary: false,
   isNewRelease: false,
-  items: [],
   name: "The test track",
 };
 
-const testSong2: Track = {
+const testSong2: TrackWithAlbum = {
   album: testAlbum,
   artists: [testArtist],
   duration_ms: 30000,
   id: "2",
   isInLibrary: false,
   isNewRelease: false,
-  items: [],
   name: "The test track #2",
 };
 
-const testSong3: Track = {
+const testSong3: TrackWithAlbum = {
   album: testAlbum,
   artists: [testArtist],
   duration_ms: 35000,
   id: "3",
   isInLibrary: false,
   isNewRelease: false,
-  items: [],
   name: "The test track #3",
 };
 
@@ -103,7 +100,7 @@ describe("Library Reducer - ", () => {
 
       const actual = result.payload as LibraryPayload;
 
-      const expected: Track[] = [
+      const expected: TrackWithAlbum[] = [
         {...testSong3, isInLibrary: true},
         ...songList,
       ];
@@ -154,7 +151,7 @@ describe("Library Reducer - ", () => {
     });
 
     it("should return the song list with the new song marked as not added to the library", async () => {
-      const songList: Track[] = [
+      const songList: TrackWithAlbum[] = [
         testSong1,
         testSong2,
         {...testSong3, isInLibrary: true},
@@ -187,7 +184,7 @@ describe("Library Reducer - ", () => {
 
       const actual = result.payload as LibraryPayload;
 
-      const expected: Track[] = [testSong1, testSong2, testSong3];
+      const expected: TrackWithAlbum[] = [testSong1, testSong2, testSong3];
 
       expect(actual.songs).toEqual(expected);
     });
@@ -226,7 +223,7 @@ describe("Library Reducer - ", () => {
     });
 
     it("should return current state if the song to be removed is not found in the library", async () => {
-      const songList: Track[] = [testSong1, testSong2];
+      const songList: TrackWithAlbum[] = [testSong1, testSong2];
       const user: User = {};
       const songToRemove = testSong3;
       const initialState: RootState = {
@@ -255,7 +252,7 @@ describe("Library Reducer - ", () => {
 
       const actual = result.payload as LibraryPayload;
 
-      const expected: Track[] = [testSong1, testSong2];
+      const expected: TrackWithAlbum[] = [testSong1, testSong2];
 
       expect(actual.songs).toEqual(expected);
     });
@@ -299,11 +296,13 @@ describe("Library Reducer - ", () => {
       const spotifyTokens: GetSpotifyTokenResponse = {
         spotifyRefreshToken: "spotifyRefreshToken",
         spotifyToken: "spotifyToken",
+        expireDateMs: 1897007435000,
       };
 
-      const spotifySearchResults: TracksResponse = {
+      const spotifySearchResults: TracksWithAlbumResponse = {
         items: [testSong2],
         href: "test",
+        next: null,
         limit: 100,
         offset: 0,
         previous: null,
@@ -365,11 +364,13 @@ describe("Library Reducer - ", () => {
       const spotifyTokens: GetSpotifyTokenResponse = {
         spotifyRefreshToken: "spotifyRefreshToken",
         spotifyToken: "spotifyToken",
+        expireDateMs: 1897007435000,
       };
 
-      const spotifySearchResults: TracksResponse = {
+      const spotifySearchResults: TracksWithAlbumResponse = {
         items: [testSong1],
         href: "test",
+        next: null,
         limit: 100,
         offset: 0,
         previous: null,
@@ -441,10 +442,12 @@ describe("Library Reducer - ", () => {
       const spotifyTokens: GetSpotifyTokenResponse = {
         spotifyRefreshToken: "spotifyRefreshToken",
         spotifyToken: "spotifyToken",
+        expireDateMs: 1897007435000,
       };
 
-      const spotifySearchResults: TracksResponse = {
+      const spotifySearchResults: TracksWithAlbumResponse = {
         items: [testSong2],
+        next: null,
         href: "test",
         limit: 100,
         offset: 0,
@@ -507,10 +510,12 @@ describe("Library Reducer - ", () => {
       const spotifyTokens: GetSpotifyTokenResponse = {
         spotifyRefreshToken: "spotifyRefreshToken",
         spotifyToken: "spotifyToken",
+        expireDateMs: 1897007435000,
       };
 
-      const spotifySearchResults: TracksResponse = {
+      const spotifySearchResults: TracksWithAlbumResponse = {
         items: [testSong1],
+        next: null,
         href: "test",
         limit: 100,
         offset: 0,

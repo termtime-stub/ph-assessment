@@ -14,7 +14,7 @@ export const LibraryPage = () => {
           .filter((s) => s.isInLibrary)
           .map((s) => (
             <Grid item xs={6} sm={4} md={4} lg={3} key={s.id}>
-              <SongCard song={s} />
+              <SongCard track={s} />
             </Grid>
           ))}
       </Grid>

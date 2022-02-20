@@ -8,7 +8,7 @@ export class DataPersistenceService {
    * @param user
    * @returns
    */
-  static async getLibraryFromFirestore(user: User): Promise<Track[]> {
+  static async getLibraryFromFirestore(user: User): Promise<TrackWithAlbum[]> {
     const connector = await FirebaseConnector.getInstance();
 
     const queryRes = await connector.db
@@ -16,7 +16,7 @@ export class DataPersistenceService {
       .where("isInLibrary", "==", true)
       .get();
 
-    return queryRes.docs.map((d) => d.data()) as Track[];
+    return queryRes.docs.map((d) => d.data()) as TrackWithAlbum[];
   }
 
   /**
@@ -28,13 +28,13 @@ export class DataPersistenceService {
    * @returns
    */
   static async updateSongLibraryAddStatus(
-    track: Track,
+    track: TrackWithAlbum,
     user: User,
     newStatus: boolean
-  ): Promise<Track> {
+  ): Promise<TrackWithAlbum> {
     const connector = await FirebaseConnector.getInstance();
 
-    const updatedSong: Track = {...track, isInLibrary: newStatus};
+    const updatedSong: TrackWithAlbum = {...track, isInLibrary: newStatus};
 
     await connector.db
       .collection(`libraries/${user.sub}/songs`)
@@ -51,10 +51,13 @@ export class DataPersistenceService {
    * @param track
    * @param isFavorited
    */
-  static async saveSongInFirestore(track: Track, user: User): Promise<Track> {
+  static async saveSongInFirestore(
+    track: TrackWithAlbum,
+    user: User
+  ): Promise<TrackWithAlbum> {
     const connector = await FirebaseConnector.getInstance();
 
-    const updatedSong: Track = {...track, isInLibrary: true};
+    const updatedSong: TrackWithAlbum = {...track, isInLibrary: true};
 
     await connector.db
       .collection(`libraries/${user.sub}/songs`)
