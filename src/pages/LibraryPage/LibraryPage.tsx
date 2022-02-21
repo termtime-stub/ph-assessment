@@ -12,6 +12,7 @@ import {ExportToSpotifyForm} from "../../components/ExportToSpotifyForm";
 import {SpotifyService} from "../../services/Spotify.service";
 import {getSpotifyTokenAction} from "../../app/redux/reducers/auth.reducer";
 import {useSnackbar} from "notistack";
+import {EmptyList} from "../../components/EmptyList";
 
 export const LibraryPage = () => {
   const {songs, loadingLibrary} = useAppSelector((state) => state.library);
@@ -69,6 +70,8 @@ export const LibraryPage = () => {
         <Grid container columns={{xs: 4, sm: 8, md: 12, lg: 12}}>
           {loadingLibrary ? (
             <LoadingSpinner />
+          ) : songs.filter((s) => s.isInLibrary).length === 0 ? (
+            <EmptyList />
           ) : (
             songs
               .filter((s) => s.isInLibrary)
