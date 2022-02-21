@@ -57,7 +57,7 @@ export const LogoutMenu = () => {
   }, [open]);
 
   return (
-    <Stack direction="row" spacing={2}>
+    <Stack direction="row" spacing={2} sx={{zIndex: 10}}>
       <div>
         <Button
           ref={anchorRef}
