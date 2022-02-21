@@ -40,7 +40,6 @@ export const saveSongAction = createAsyncThunk(
       );
 
       let modifiedSong;
-      // let newLibrarySongState;
 
       if (existingSongIndex === -1) {
         // Song is new, add to firestore

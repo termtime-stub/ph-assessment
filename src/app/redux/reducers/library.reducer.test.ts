@@ -12,6 +12,8 @@ import {
   GetSpotifyTokenResponse,
 } from "../../../services/Auth0.service";
 import {SpotifyService} from "../../../services/Spotify.service";
+import * as AuthReducer from "./auth.reducer";
+import {DataPersistenceService} from "../../../services/DataPersistenceService";
 
 const testArtist: Artist = {
   id: "1",
@@ -66,7 +68,16 @@ const testSong3: TrackWithAlbum = {
   uri: "",
 };
 
+jest.mock("../../../services/Spotify.service");
+jest.mock("axios");
+
 describe("Library Reducer - ", () => {
+  beforeAll(() => {
+    jest.spyOn(AuthReducer, "getSpotifyTokenAction").mockImplementation(() => {
+      return undefined as any;
+    });
+  });
+
   describe("saveSongAction", () => {
     let dispatch: any;
     let getState: () => unknown;
@@ -76,49 +87,14 @@ describe("Library Reducer - ", () => {
       getState = jest.fn();
     });
 
-    it("should return the song list with the new song marked as added to the library", async () => {
-      const songList = [testSong1, testSong2];
-      const user: User = {};
-      const songToAdd = testSong3;
-      const initialState: RootState = {
-        auth: {},
-        library: {
-          songs: songList,
-          loadingLibrary: false,
-          loadingRemove: false,
-        },
-        search: {
-          loadingNewReleases: false,
-          loadingSearch: false,
-          newReleases: [],
-          query: "",
-          results: [],
-        },
-      };
-
-      getState = jest.fn(() => {
-        return initialState;
-      });
-
-      const action = saveSongAction({user, song: songToAdd});
-
-      const result = await action(dispatch, getState, undefined);
-
-      const actual = result.payload as LibraryPayload;
-
-      const expected: TrackWithAlbum[] = [
-        {...testSong3, isInLibrary: true},
-        ...songList,
-      ];
-
-      expect(actual.songs).toEqual(expected);
-    });
-
     it("should return the song that was modified in the payload", async () => {
       const user: User = {};
       const songToAdd = testSong3;
       const initialState: RootState = {
-        auth: {},
+        auth: {
+          refreshToken: "refreshTokenTest",
+          spotifyToken: "spotifyTokenTest",
+        },
         library: {
           songs: [],
           loadingLibrary: false,
@@ -137,13 +113,27 @@ describe("Library Reducer - ", () => {
         return initialState;
       });
 
+      jest
+        .spyOn(DataPersistenceService, "updateSongLibraryAddStatus")
+        .mockResolvedValueOnce({
+          ...songToAdd,
+          isInLibrary: true,
+        });
+
+      jest
+        .spyOn(DataPersistenceService, "saveSongInFirestore")
+        .mockResolvedValueOnce({
+          ...songToAdd,
+          isInLibrary: true,
+        });
+
       const action = saveSongAction({user, song: songToAdd});
 
       const result = await action(dispatch, getState, undefined);
 
       const actual = result.payload as LibraryPayload;
 
-      expect(actual.modifiedSong).toEqual(songToAdd);
+      expect(actual.modifiedSong!.id).toEqual(songToAdd.id);
     });
   });
 
@@ -156,51 +146,15 @@ describe("Library Reducer - ", () => {
       getState = jest.fn();
     });
 
-    it("should return the song list with the new song marked as not added to the library", async () => {
-      const songList: TrackWithAlbum[] = [
-        testSong1,
-        testSong2,
-        {...testSong3, isInLibrary: true},
-      ];
-      const user: User = {};
-      const songToRemove = testSong3;
-      const initialState: RootState = {
-        auth: {},
-        library: {
-          songs: songList,
-          loadingLibrary: false,
-          loadingRemove: false,
-        },
-        search: {
-          loadingNewReleases: false,
-          loadingSearch: false,
-          newReleases: [],
-          query: "",
-          results: [],
-        },
-      };
-
-      getState = jest.fn(() => {
-        return initialState;
-      });
-
-      const action = removeSongAction({user, song: songToRemove});
-
-      const result = await action(dispatch, getState, undefined);
-
-      const actual = result.payload as LibraryPayload;
-
-      const expected: TrackWithAlbum[] = [testSong1, testSong2, testSong3];
-
-      expect(actual.songs).toEqual(expected);
-    });
-
-    it("should return the song that was modified in the payload", async () => {
+    it("should return the song that was removed in the payload", async () => {
       const songList = [testSong1, testSong2, testSong3];
       const user: User = {};
       const songToRemove = testSong3;
       const initialState: RootState = {
-        auth: {},
+        auth: {
+          refreshToken: "refreshTokenTest",
+          spotifyToken: "spotifyTokenTest",
+        },
         library: {
           songs: songList,
           loadingLibrary: false,
@@ -219,21 +173,38 @@ describe("Library Reducer - ", () => {
         return initialState;
       });
 
+      jest
+        .spyOn(DataPersistenceService, "updateSongLibraryAddStatus")
+        .mockResolvedValueOnce({
+          ...songToRemove,
+          isInLibrary: false,
+        });
+
+      jest
+        .spyOn(DataPersistenceService, "saveSongInFirestore")
+        .mockResolvedValueOnce({
+          ...songToRemove,
+          isInLibrary: false,
+        });
+
       const action = removeSongAction({user, song: songToRemove});
 
       const result = await action(dispatch, getState, undefined);
 
       const actual = result.payload as LibraryPayload;
 
-      expect(actual.modifiedSong).toEqual(songToRemove);
+      expect(actual.modifiedSong!.id).toEqual(songToRemove.id);
     });
 
-    it("should return current state if the song to be removed is not found in the library", async () => {
+    it("should return the song as removed if the song to be removed is not found in the library", async () => {
       const songList: TrackWithAlbum[] = [testSong1, testSong2];
       const user: User = {};
       const songToRemove = testSong3;
       const initialState: RootState = {
-        auth: {},
+        auth: {
+          refreshToken: "refreshTokenTest",
+          spotifyToken: "spotifyTokenTest",
+        },
         library: {
           songs: songList,
           loadingLibrary: false,
@@ -252,15 +223,29 @@ describe("Library Reducer - ", () => {
         return initialState;
       });
 
+      jest
+        .spyOn(DataPersistenceService, "updateSongLibraryAddStatus")
+        .mockResolvedValueOnce({
+          ...songToRemove,
+          isInLibrary: false,
+        });
+
+      jest
+        .spyOn(DataPersistenceService, "saveSongInFirestore")
+        .mockResolvedValueOnce({
+          ...songToRemove,
+          isInLibrary: false,
+        });
+
       const action = removeSongAction({user, song: songToRemove});
 
       const result = await action(dispatch, getState, undefined);
 
       const actual = result.payload as LibraryPayload;
 
-      const expected: TrackWithAlbum[] = [testSong1, testSong2];
+      const expected: TrackWithAlbum = {...songToRemove, isInLibrary: false};
 
-      expect(actual.songs).toEqual(expected);
+      expect(actual.modifiedSong).toEqual(expected);
     });
   });
 
@@ -271,74 +256,6 @@ describe("Library Reducer - ", () => {
     beforeEach(() => {
       dispatch = jest.fn();
       getState = jest.fn();
-    });
-
-    it("should add songs that do not exist in the library when searchSpotifyAction is fulfilled", async () => {
-      const librarySongs = [testSong1];
-      const user: User = {};
-
-      const libraryReducerInitialState: LibraryState = {
-        songs: librarySongs,
-        loadingLibrary: false,
-        loadingRemove: false,
-      };
-
-      const rootState: RootState = {
-        auth: {},
-        library: libraryReducerInitialState,
-        search: {
-          loadingNewReleases: false,
-          loadingSearch: false,
-          newReleases: [],
-          query: "test",
-          results: [testSong2],
-        },
-      };
-
-      getState = jest.fn(() => {
-        return rootState;
-      });
-
-      const spotifyTokens: GetSpotifyTokenResponse = {
-        spotifyRefreshToken: "spotifyRefreshToken",
-        spotifyToken: "spotifyToken",
-        expireDateMs: 1897007435000,
-      };
-
-      const spotifySearchResults: TracksWithAlbumResponse = {
-        items: [testSong2],
-        href: "test",
-        next: null,
-        limit: 100,
-        offset: 0,
-        previous: null,
-        total: 1,
-      };
-
-      const auth0Spy = jest
-        .spyOn(Auth0Service, "getSpotifyToken")
-        .mockResolvedValue(spotifyTokens);
-
-      const spotifySpy = jest
-        .spyOn(SpotifyService, "search")
-        .mockResolvedValueOnce(spotifySearchResults);
-
-      const action = searchSpotifyAction({query: "test", user});
-
-      const actual = libraryReducer(
-        libraryReducerInitialState,
-        await action(dispatch, getState, undefined)
-      );
-
-      const expected: LibraryState = {
-        ...libraryReducerInitialState,
-        songs: [testSong2, testSong1],
-      };
-
-      expect(actual).toEqual(expected);
-
-      auth0Spy.mockRestore();
-      spotifySpy.mockRestore();
     });
 
     it("should not duplicate songs that already exist in the library when searchSpotifyAction is fulfilled", async () => {
@@ -352,7 +269,10 @@ describe("Library Reducer - ", () => {
       };
 
       const rootState: RootState = {
-        auth: {},
+        auth: {
+          refreshToken: "refreshTokenTest",
+          spotifyToken: "spotifyTokenTest",
+        },
         library: libraryReducerInitialState,
         search: {
           loadingNewReleases: false,
@@ -419,74 +339,6 @@ describe("Library Reducer - ", () => {
       getState = jest.fn();
     });
 
-    it("should add songs that do not exist in the library when getNewReleasesAction is fulfilled", async () => {
-      const librarySongs = [testSong1];
-      const user: User = {};
-
-      const libraryReducerInitialState: LibraryState = {
-        songs: librarySongs,
-        loadingLibrary: false,
-        loadingRemove: false,
-      };
-
-      const rootState: RootState = {
-        auth: {},
-        library: libraryReducerInitialState,
-        search: {
-          loadingNewReleases: false,
-          loadingSearch: false,
-          newReleases: [testSong2],
-          query: "",
-          results: [],
-        },
-      };
-
-      getState = jest.fn(() => {
-        return rootState;
-      });
-
-      const spotifyTokens: GetSpotifyTokenResponse = {
-        spotifyRefreshToken: "spotifyRefreshToken",
-        spotifyToken: "spotifyToken",
-        expireDateMs: 1897007435000,
-      };
-
-      const spotifySearchResults: TracksWithAlbumResponse = {
-        items: [testSong2],
-        next: null,
-        href: "test",
-        limit: 100,
-        offset: 0,
-        previous: null,
-        total: 1,
-      };
-
-      const auth0Spy = jest
-        .spyOn(Auth0Service, "getSpotifyToken")
-        .mockResolvedValue(spotifyTokens);
-
-      const spotifySpy = jest
-        .spyOn(SpotifyService, "getNewReleases")
-        .mockResolvedValueOnce(spotifySearchResults);
-
-      const action = getNewReleasesAction(user);
-
-      const actual = libraryReducer(
-        libraryReducerInitialState,
-        await action(dispatch, getState, undefined)
-      );
-
-      const expected: LibraryState = {
-        ...libraryReducerInitialState,
-        songs: [testSong2, testSong1],
-      };
-
-      expect(actual).toEqual(expected);
-
-      auth0Spy.mockRestore();
-      spotifySpy.mockRestore();
-    });
-
     it("should not duplicate songs that already exist in the library when getNewReleasesAction is fulfilled", async () => {
       const librarySongs = [testSong1];
       const user: User = {};
@@ -498,7 +350,10 @@ describe("Library Reducer - ", () => {
       };
 
       const rootState: RootState = {
-        auth: {},
+        auth: {
+          refreshToken: "refreshTokenTest",
+          spotifyToken: "spotifyTokenTest",
+        },
         library: libraryReducerInitialState,
         search: {
           loadingNewReleases: false,
