@@ -14,6 +14,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({children}) => {
 
       loginWithRedirect({
         redirectUri,
+        connection_scope:
+          "playlist-modify-private playlist-read-collaborative playlist-read-private playlist-modify-public",
       });
     }
   }, [isAuthenticated, isLoading, loginWithRedirect]);

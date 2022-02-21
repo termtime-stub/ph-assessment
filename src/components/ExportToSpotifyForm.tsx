@@ -7,7 +7,7 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import {useState} from "react";
+import {useState, useCallback} from "react";
 
 interface ExportToSpotifyFormProps {
   open: boolean;
@@ -20,9 +20,22 @@ export const ExportToSpotifyForm = ({
   onCreatePlaylist,
 }: ExportToSpotifyFormProps) => {
   const [playlistName, setPlaylistName] = useState("");
+
+  const handleKeyPress = useCallback(
+    (e) => {
+      const ENTER = 13;
+
+      if (e.keyCode === ENTER) {
+        onCreatePlaylist(playlistName);
+        setPlaylistName("");
+      }
+    },
+    [onCreatePlaylist, playlistName]
+  );
+
   return (
     <div>
-      <Dialog open={open} onClose={onClose}>
+      <Dialog open={open} onClose={onClose} onKeyUp={handleKeyPress}>
         <DialogTitle>Export library to Spotify</DialogTitle>
         <DialogContent>
           <DialogContentText>

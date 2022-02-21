@@ -38,6 +38,8 @@ const testSong1: TrackWithAlbum = {
   isInLibrary: false,
   isNewRelease: false,
   name: "The test track",
+  external_url: {},
+  uri: "",
 };
 
 const testSong2: TrackWithAlbum = {
@@ -48,6 +50,8 @@ const testSong2: TrackWithAlbum = {
   isInLibrary: false,
   isNewRelease: false,
   name: "The test track #2",
+  external_url: {},
+  uri: "",
 };
 
 const testSong3: TrackWithAlbum = {
@@ -58,6 +62,8 @@ const testSong3: TrackWithAlbum = {
   isInLibrary: false,
   isNewRelease: false,
   name: "The test track #3",
+  external_url: {},
+  uri: "",
 };
 
 describe("Library Reducer - ", () => {

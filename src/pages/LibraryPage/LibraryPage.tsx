@@ -11,11 +11,13 @@ import {PlaylistCreateFab} from "../../components/PlaylistCreateFab";
 import {ExportToSpotifyForm} from "../../components/ExportToSpotifyForm";
 import {SpotifyService} from "../../services/Spotify.service";
 import {getSpotifyTokenAction} from "../../app/redux/reducers/auth.reducer";
+import {useSnackbar} from "notistack";
 
 export const LibraryPage = () => {
   const {songs, loadingLibrary} = useAppSelector((state) => state.library);
   const {spotifyToken} = useAppSelector((state) => state.auth);
   const [isSpotifyFormOpen, setIsSpotifyFormOpen] = useState(false);
+  const {enqueueSnackbar} = useSnackbar();
 
   const {user} = useAuth0();
   const dispatch = useAppDispatch();
@@ -24,18 +26,25 @@ export const LibraryPage = () => {
     async (playlistName) => {
       if (user?.sub) {
         await dispatch(getSpotifyTokenAction({user}));
-        const spotifyUID = "";
 
-        SpotifyService.createPlaylistAndAddTracks(
+        const spotifyUID = user.sub?.substring(user.sub.lastIndexOf(":") + 1);
+
+        const redirectUrl = await SpotifyService.createPlaylistAndAddTracks(
           songs,
           playlistName,
           spotifyUID,
           spotifyToken!
         );
+
+        window.open(redirectUrl, "_blank");
+
+        enqueueSnackbar("Playlist exported successfully!", {
+          variant: "success",
+        });
         setIsSpotifyFormOpen(false);
       }
     },
-    [dispatch, songs, spotifyToken, user]
+    [dispatch, enqueueSnackbar, songs, spotifyToken, user]
   );
 
   useEffect(() => {

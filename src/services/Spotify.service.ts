@@ -155,7 +155,9 @@ export class SpotifyService {
 
     const createPlaylistRes = await axios.post<CreatePlaylistResponse>(
       createPlayListEndpoint,
-      params,
+      {
+        name: playlistName,
+      },
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
