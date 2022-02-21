@@ -182,12 +182,6 @@ export class SpotifyService {
   ): Promise<boolean> {
     const addTracksToPlaylistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
 
-    // const params = new URLSearchParams();
-    // params.append(
-    //   "uris",
-    //   tracks.map((t) => t.uri)
-    // );
-
     axios.post<AddTracksToPlaylistResponse>(
       addTracksToPlaylistEndpoint,
       {

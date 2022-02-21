@@ -2,11 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {SearchPayload, SearchState} from "../../../types/state";
 import {SpotifyService} from "../../../services/Spotify.service";
 import {User} from "@auth0/auth0-react";
-import {
-  getLibraryAction,
-  removeSongAction,
-  saveSongAction,
-} from "./library.reducer";
+import {removeSongAction, saveSongAction} from "./library.reducer";
 import {RootState} from "../../store";
 import {logoutFromDispatch, getSpotifyTokenAction} from "./auth.reducer";
 import {thunkErrorHandler} from "../../../utils";

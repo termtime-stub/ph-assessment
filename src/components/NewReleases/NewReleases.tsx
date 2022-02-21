@@ -1,4 +1,3 @@
-import {useAuth0} from "@auth0/auth0-react";
 import {Typography, Box, Theme, Grid, CircularProgress} from "@mui/material";
 
 import Carousel from "react-multi-carousel";
@@ -6,9 +5,7 @@ import "react-multi-carousel/lib/styles.css";
 
 import {makeStyles, createStyles} from "@mui/styles";
 import {SongCard} from "./SongCard";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {useEffect} from "react";
-import {getNewReleasesAction} from "../../app/redux/reducers/search.reducer";
+import {useAppSelector} from "../../app/hooks";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

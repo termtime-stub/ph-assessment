@@ -1,4 +1,4 @@
-import {Box, Fab, Grid} from "@mui/material";
+import {Box, Grid} from "@mui/material";
 import {NavBar} from "../../components/NavBar";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {SongCard} from "../../components/NewReleases/SongCard";
@@ -18,30 +18,39 @@ export const LibraryPage = () => {
   const {spotifyToken} = useAppSelector((state) => state.auth);
   const [isSpotifyFormOpen, setIsSpotifyFormOpen] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
+  const [playlistName, setPlaylistName] = useState("");
 
   const {user} = useAuth0();
   const dispatch = useAppDispatch();
 
   const createPlaylist = useCallback(
     async (playlistName) => {
-      if (user?.sub) {
-        await dispatch(getSpotifyTokenAction({user}));
+      try {
+        if (user?.sub) {
+          await dispatch(getSpotifyTokenAction({user}));
 
-        const spotifyUID = user.sub?.substring(user.sub.lastIndexOf(":") + 1);
+          const spotifyUID = user.sub?.substring(user.sub.lastIndexOf(":") + 1);
 
-        const redirectUrl = await SpotifyService.createPlaylistAndAddTracks(
-          songs,
-          playlistName,
-          spotifyUID,
-          spotifyToken!
-        );
+          const redirectUrl = await SpotifyService.createPlaylistAndAddTracks(
+            songs,
+            playlistName,
+            spotifyUID,
+            spotifyToken!
+          );
 
-        window.open(redirectUrl, "_blank");
+          window.open(redirectUrl, "_blank");
 
-        enqueueSnackbar("Playlist exported successfully!", {
-          variant: "success",
+          enqueueSnackbar("Playlist exported successfully!", {
+            variant: "success",
+          });
+
+          setPlaylistName("");
+          setIsSpotifyFormOpen(false);
+        }
+      } catch (error) {
+        enqueueSnackbar("Playlist could not be saved.", {
+          variant: "error",
         });
-        setIsSpotifyFormOpen(false);
       }
     },
     [dispatch, enqueueSnackbar, songs, spotifyToken, user]
@@ -79,6 +88,8 @@ export const LibraryPage = () => {
         />
       </Box>
       <ExportToSpotifyForm
+        playlistName={playlistName}
+        setPlaylistName={setPlaylistName}
         open={isSpotifyFormOpen}
         onClose={() => setIsSpotifyFormOpen(false)}
         onCreatePlaylist={createPlaylist}

@@ -8,7 +8,6 @@ import {useEffect} from "react";
 import {useAppSelector, useAppDispatch} from "../../app/hooks";
 import {getLibraryAction} from "../../app/redux/reducers/library.reducer";
 import {getNewReleasesAction} from "../../app/redux/reducers/search.reducer";
-import {useSnackbar} from "notistack";
 
 export const DashboardPage = () => {
   const {user} = useAuth0();
@@ -21,12 +20,17 @@ export const DashboardPage = () => {
         if (songs.length === 0) {
           await dispatch(getLibraryAction({user}));
         }
-        dispatch(getNewReleasesAction(user));
       }
     };
 
     initialFetch();
   }, [dispatch, songs.length, user]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(getNewReleasesAction(user));
+    }
+  }, [dispatch, user]);
   return (
     <Box>
       <NavBar />
