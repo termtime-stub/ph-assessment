@@ -11,7 +11,6 @@ import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 import {useEffect} from "react";
 import {useSnackbar} from "notistack";
 import {useAppSelector, usePrevious} from "../app/hooks";
-import {FireExtinguisherOutlined} from "@mui/icons-material";
 
 const darkMode = createTheme({
   palette: {

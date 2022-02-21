@@ -8,7 +8,7 @@ import {
   saveSongAction,
 } from "./library.reducer";
 import {RootState} from "../../store";
-import {logoutFromDispatch, getSpotifyToken} from "./auth.reducer";
+import {logoutFromDispatch, getSpotifyTokenAction} from "./auth.reducer";
 import {thunkErrorHandler} from "../../../utils";
 
 const initialState: SearchState = {
@@ -29,7 +29,7 @@ export const searchSpotifyAction = createAsyncThunk(
   async ({user, query}: SearchSpotifyActionParams, api) => {
     try {
       // Keep token updated
-      await api.dispatch(getSpotifyToken({user}));
+      await api.dispatch(getSpotifyTokenAction({user}));
 
       const {spotifyToken, refreshToken} = (api.getState() as RootState).auth;
 
@@ -64,7 +64,7 @@ export const getNewReleasesAction = createAsyncThunk(
   "search/getNewReleases",
   async (user: User, api) => {
     try {
-      await api.dispatch(getSpotifyToken({user}));
+      await api.dispatch(getSpotifyTokenAction({user}));
 
       const {spotifyToken, refreshToken} = (api.getState() as RootState).auth;
 

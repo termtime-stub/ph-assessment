@@ -131,4 +131,73 @@ export class SpotifyService {
 
     return refreshRes.data.access_token;
   }
+
+  /**
+   * Creates a new spotify playlist and adds the specified tracks.
+   *
+   * Returns the external redirect URL to take the user to the spotify playlist
+   * @param tracks
+   * @param playlistName
+   * @param spotifyUserId
+   * @param accessToken
+   * @returns
+   */
+  static async createPlaylistAndAddTracks(
+    tracks: TrackWithAlbum[],
+    playlistName: string,
+    spotifyUserId: string,
+    accessToken: string
+  ): Promise<string> {
+    const createPlayListEndpoint = `https://api.spotify.com/v1/users/${spotifyUserId}/playlists`;
+
+    const params = new URLSearchParams();
+    params.append("name", playlistName);
+
+    const createPlaylistRes = await axios.post<CreatePlaylistResponse>(
+      createPlayListEndpoint,
+      params,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+
+    // Once we have the playlist ID, add songs to it
+
+    const playlistId = createPlaylistRes.data.id;
+
+    this.addTracksToPlaylist(tracks, accessToken, playlistId);
+
+    return createPlaylistRes.data.external_urls.spotify!;
+  }
+
+  static async addTracksToPlaylist(
+    tracks: TrackWithAlbum[],
+    accessToken: string,
+    playlistId: string
+  ): Promise<boolean> {
+    const addTracksToPlaylistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+
+    // const params = new URLSearchParams();
+    // params.append(
+    //   "uris",
+    //   tracks.map((t) => t.uri)
+    // );
+
+    axios.post<AddTracksToPlaylistResponse>(
+      addTracksToPlaylistEndpoint,
+      {
+        uris: tracks.map((t) => t.uri),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return true;
+  }
 }

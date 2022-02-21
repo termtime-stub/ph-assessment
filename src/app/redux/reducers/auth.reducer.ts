@@ -46,7 +46,7 @@ const getNewTokenIfExpired = async (
   }
 };
 
-export const getSpotifyToken = createAsyncThunk(
+export const getSpotifyTokenAction = createAsyncThunk(
   "auth/getSpotifyToken",
   async ({user}: GetSpotifyTokenParams, api) => {
     try {
@@ -93,19 +93,20 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getSpotifyToken.pending, (state) => {
+      .addCase(getSpotifyTokenAction.pending, (state) => {
         state.error = undefined;
       })
-      .addCase(getSpotifyToken.fulfilled, (state, action) => {
+      .addCase(getSpotifyTokenAction.fulfilled, (state, action) => {
         state.error = undefined;
 
-        const {refreshToken, spotifyToken, expireDateMs} = action.payload;
+        const {refreshToken, spotifyToken, expireDateMs} =
+          action.payload as AuthPayload;
 
         state.refreshToken = refreshToken || state.refreshToken;
         state.spotifyToken = spotifyToken || state.spotifyToken;
         state.expireDateMs = expireDateMs || state.expireDateMs;
       })
-      .addCase(getSpotifyToken.rejected, (state) => {
+      .addCase(getSpotifyTokenAction.rejected, (state) => {
         state.error = "Could not authenticate with Spotify.";
       });
   },

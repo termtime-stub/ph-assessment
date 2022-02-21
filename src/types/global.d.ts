@@ -25,6 +25,9 @@ declare global {
 
   //#region API Models
 
+  interface ExternalUrls {
+    spotify?: string;
+  }
   interface Artist {
     id: string;
     name: string;
@@ -37,9 +40,7 @@ declare global {
   interface Album {
     album_type: string;
     artists: Artist[];
-    external_urls: {
-      spotify?: string;
-    };
+    external_urls: ExternalUrls;
     id: string;
     images: URLImage[];
     name: string;
@@ -52,6 +53,8 @@ declare global {
     isInLibrary: boolean;
     duration_ms: number;
     isNewRelease: boolean;
+    external_url: ExternalUrls;
+    uri: string;
   }
 
   interface AlbumWithTracks extends Album {
@@ -104,6 +107,15 @@ declare global {
 
   interface RefreshTokenResponse {
     access_token: string;
+  }
+
+  interface CreatePlaylistResponse {
+    external_urls: ExternalUrls;
+    id: string;
+  }
+
+  interface AddTracksToPlaylistResponse {
+    snapshot_id: string;
   }
   //#endregion
 
